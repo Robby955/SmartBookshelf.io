@@ -4,57 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/SmartShelf.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6334.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6400.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6401.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6404.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6406.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/IMG_6409.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/book_bounds.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/open_library_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/test_book_search.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/without_crop.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/app/api/upload/route.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/app/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/app/layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/components/Footer.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/components/Header.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/components/UploadBook.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/components/uploadButton.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/components/uploadFile.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/context/AuthContext.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/firebase.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/_app.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/about.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/examples.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/feedback.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/login.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/page.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/pages/user.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/postcss.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/public/IMG_6335.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/public/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/styles/globals.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/my-app/tailwind.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_mongodb_connection.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_vision_api.py" afterDir="false" />
-    </list>
+    <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,7 +71,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.google.cloudcode.ide_session_index": "20240624_0000",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/my-app",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -194,7 +144,7 @@
       <workItem from="1718656376362" duration="10000" />
       <workItem from="1718656954142" duration="32975000" />
       <workItem from="1719075414267" duration="11864000" />
-      <workItem from="1719161875620" duration="104058000" />
+      <workItem from="1719161875620" duration="104386000" />
     </task>
     <servers />
   </component>
