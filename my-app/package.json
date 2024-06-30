@@ -1,0 +1,31 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@firebase/app": "^0.10.5",
+    "@firebase/auth": "^1.7.4",
+    "autoprefixer": "^10.4.2",
+    "axios": "^0.27.2",
+    "daisyui": "^2.21.0",
+    "firebase": "^10.12.2",
+    "fuzzball": "^2.1.2",
+    "next": "latest",
+    "postcss": "^8.4.6",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "^3.0.23",
+    "unidecode": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "eslint": "8.11.0",
+    "eslint-config-next": "12.1.0"
+  }
+}

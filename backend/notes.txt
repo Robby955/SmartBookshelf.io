@@ -1,0 +1,19 @@
+Ideal training would be on say 10,000 spines for which we had associated extracted key words from this would then allow us to learn the extraction algorithm as good as possible.
+
+So the training/test data would be text input (the extraction of the spine text) and then keywords: Authors and Title keywords
+
+For example; text="Deep Learning for Coders
+with fastai and PyTorch
+Howard
+& Gugger
+O'REILLY
+"
+
+author=['Howard','Gugger']
+Title=['Deep Learning for Coders with fastai and PyTorch']
+
+Trained on thousands of such examples could also consider how the characters are spaced in the text as well.
+
+
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000/
+for running localy

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/SmartShelf.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6334.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6400.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6401.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6404.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6406.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/IMG_6409.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/book_bounds.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/open_library_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/test_book_search.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/without_crop.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/app/api/upload/route.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/app/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/app/layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/components/Footer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/components/Header.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/components/UploadBook.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/components/uploadButton.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/components/uploadFile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/context/AuthContext.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/firebase.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/_app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/about.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/examples.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/feedback.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/page.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/pages/user.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/postcss.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/public/IMG_6335.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/public/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/styles/globals.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/tailwind.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_mongodb_connection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_vision_api.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dockerfile" />
+        <option value="TypeScript File" />
+        <option value="Python Script" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;contexts&quot;: [
+    {
+      &quot;name&quot;: &quot;gke_smartdogbreed-416219_us-central1-a_breed-cluster&quot;
+    }
+  ],
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="KubernetesSettings">
+    <option name="contextName" value="gke_smartdogbreed-416219_us-central1-a_breed-cluster" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2hvFgb3w2CJmUiqXcYDvldVTpE4" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ACTIVE_CLOUD_PROJECT_ACCOUNT": "robbysneiderman@gmail.com",
+    "ACTIVE_CLOUD_PROJECT_ID": "smartdogbreed-416219",
+    "ACTIVE_CLOUD_PROJECT_NAME": "smartDogBreed",
+    "ACTIVE_CLOUD_PROJECT_NUMBER": "668071408107",
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "JavaScript Debug.upload_test.html.executor": "Run",
+    "Python.app.executor": "Run",
+    "Python.book_bounds.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.open_library_api.executor": "Run",
+    "Python.test_api.executor": "Run",
+    "Python.test_book_search.executor": "Run",
+    "Python.test_image_load.executor": "Run",
+    "Python.test_laod.executor": "Run",
+    "Python.test_mongodb_connection.executor": "Run",
+    "Python.test_vision_api.executor": "Run",
+    "Python.without_crop.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.google.cloudcode.ide_session_index": "20240624_0000",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/my-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.general",
+    "ts.external.directory.path": "C:\\Users\\robby\\PycharmProjects\\SmartShelf\\my-app\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app\public" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\static\images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app\public" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\frontend\images" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="SmartShelf" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="" />
+      <created>1718466756158</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1718466756158</updated>
+      <workItem from="1718466762023" duration="5795000" />
+      <workItem from="1718550021824" duration="596000" />
+      <workItem from="1718550649200" duration="5862000" />
+      <workItem from="1718656376362" duration="10000" />
+      <workItem from="1718656954142" duration="32975000" />
+      <workItem from="1719075414267" duration="11864000" />
+      <workItem from="1719161875620" duration="104058000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/backend/test_book_search.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SmartShelf$test_mongodb_connection.coverage" NAME="test_mongodb_connection Coverage Results" MODIFIED="1718552649424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SmartShelf$test_vision_api.coverage" NAME="test_vision_api Coverage Results" MODIFIED="1718736920400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SmartShelf$book_bounds.coverage" NAME="book_bounds Coverage Results" MODIFIED="1719448621323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$test_api.coverage" NAME="test_api Coverage Results" MODIFIED="1718978675501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$test_book_search.coverage" NAME="test_book_search Coverage Results" MODIFIED="1719162294968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$test_laod.coverage" NAME="test_laod Coverage Results" MODIFIED="1719240118382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$app.coverage" NAME="app Coverage Results" MODIFIED="1719098319843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$without_crop.coverage" NAME="without_crop Coverage Results" MODIFIED="1719334300873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$open_library_api.coverage" NAME="open_library_api Coverage Results" MODIFIED="1719098243669" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$test_image_load.coverage" NAME="test_image_load Coverage Results" MODIFIED="1719240151260" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/SmartShelf$main.coverage" NAME="main Coverage Results" MODIFIED="1719076174755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

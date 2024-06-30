@@ -1,0 +1,6 @@
+.venv
+node_modules
+uploads
+.env.local
+.DS_Store
+credentials.json
