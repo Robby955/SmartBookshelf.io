@@ -1,6 +1,4 @@
-// my-app/pages/index.js
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import '../styles/globals.css';
@@ -11,7 +9,6 @@ export default function Home() {
   const [extractedTexts, setExtractedTexts] = useState([]);
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
-  const [selectedBook, setSelectedBook] = useState(null);
   const [bookInfo, setBookInfo] = useState(null);
 
   const bookRefs = useRef([]);
@@ -62,8 +59,6 @@ export default function Home() {
 
   const handleBookSelect = async (event) => {
     const selectedText = event.target.value;
-    setSelectedBook(selectedText);
-    console.log(`Selected book text: ${selectedText}`);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}books/search_book/${encodeURIComponent(selectedText)}`);
