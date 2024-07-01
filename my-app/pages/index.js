@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import '../styles/globals.css';
+// Remove the global CSS import from here
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
