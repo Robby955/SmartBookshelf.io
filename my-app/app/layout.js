@@ -1,16 +1,14 @@
-// my-app/app/layout.js
+// File: C:\Users\robby\PycharmProjects\SmartShelf\my-app\app\layout.js
+import { Inter } from "next/font/google";
+import "../styles/globals.css"; // Update this path to point to the correct location
 
-import '../styles/globals.css';  // Ensure this path is correct
-
-export default function Layout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>My App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body>
-        <div className="font-sans antialiased">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
