@@ -1,4 +1,3 @@
-# app.py
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -18,9 +17,17 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+# Update allowed origins to include Vercel deployment URL
+origins = [
+    "http://localhost:3000",
+    "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
+    "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -138,10 +145,7 @@ async def search_book(query: str):
         logger.error("Error searching for book: %s", e)
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail="Internal server error")
-        
-
 '''
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
