@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/my-app/.env.development" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/.env.production" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my-app/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +77,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.google.cloudcode.ide_session_index": "20240624_0000",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "working-local-version",
     "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/my-app",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -149,7 +150,7 @@
       <workItem from="1718656376362" duration="10000" />
       <workItem from="1718656954142" duration="32975000" />
       <workItem from="1719075414267" duration="11864000" />
-      <workItem from="1719161875620" duration="111429000" />
+      <workItem from="1719161875620" duration="114645000" />
     </task>
     <servers />
   </component>

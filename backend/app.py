@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,6 +33,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    response = await call_next(request)
+    logger.debug(f"CORS Headers: {response.headers}")
+    return response
+
 
 # Set environment variable for Google Application Credentials
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'credentials.json'
@@ -104,7 +111,7 @@ async def upload_book(file: UploadFile = File(...)):
                     text = texts[0].description
                     extracted_texts.append({
                         "text": text,
-                        "image_path": book_img_path,
+                        "image_path": book_img_path.replace("\\", "/"),  # Ensure correct path format
                         "coordinates": {"x1": x1, "y1": y1, "x2": x2, "y2": y2}  # Include coordinates
                     })
 
@@ -117,6 +124,7 @@ async def upload_book(file: UploadFile = File(...)):
         logger.error("Error processing file: %s", e)
         logger.error(traceback.format_exc())
         return JSONResponse(status_code=500, content={"error": str(e)})
+
 '''
 @app.get("/books/search_book/{query}")
 async def search_book(query: str):
@@ -126,7 +134,7 @@ async def search_book(query: str):
             url = f"http://openlibrary.org/search.json?q={quote(query)}"
             async with session.get(url) as response:
                 logger.debug(f"Response status: {response.status}")
-                if response.status == 200:
+                if response.status == 200):
                     data = await response.json()
                     logger.debug(f"Response data: {data}")
                     books = [
