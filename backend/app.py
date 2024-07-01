@@ -22,7 +22,8 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
-    "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app"
+    "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app",
+    "https://shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app"
 ]
 
 app.add_middleware(
