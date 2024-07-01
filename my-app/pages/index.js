@@ -1,5 +1,8 @@
+// my-app/pages/index.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import '../styles/globals.css';
 
 export default function Home() {
@@ -123,7 +126,7 @@ export default function Home() {
           )}
           {uploadedImage && (
             <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
-              <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-contain" />
+              <Image src={uploadedImage} alt="Uploaded" layout="fill" objectFit="contain" />
             </div>
           )}
           <button
@@ -139,9 +142,12 @@ export default function Home() {
             <div key={index} className="card shadow-md rounded-lg p-4 bg-white" ref={el => bookRefs.current[index] = el}>
               <h2 className="text-lg font-semibold mb-2 text-gray-800">Extracted Text:</h2>
               <p className="text-gray-700">{item.text || 'No text detected'}</p>
-              <img
+              <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image_path}`}
                 alt={`Book ${index + 1}`}
+                layout="responsive"
+                width={500}
+                height={300}
                 className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
               />
             </div>

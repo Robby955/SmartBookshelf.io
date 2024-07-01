@@ -1,5 +1,7 @@
-// components/Header.js
+// my-app/components/Header.js
+
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
 import { signInWithGoogle, logout } from '../firebase';
 
@@ -10,7 +12,7 @@ const Header = () => {
     <header className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <img src="/logo.png" alt="SmartBookshelf Logo" className="h-8 w-8" />
+          <Image src="/logo.png" alt="SmartBookshelf Logo" width={32} height={32} />
           <Link href="/" legacyBehavior>
             <a className="text-white text-xl font-bold">SmartBookshelf</a>
           </Link>

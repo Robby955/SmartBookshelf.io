@@ -1,4 +1,7 @@
+// my-app/components/UploadButton.js
+
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 const UploadButton = () => {
   const [file, setFile] = useState(null);
@@ -20,7 +23,7 @@ const UploadButton = () => {
       </button>
       {uploadedImage && (
         <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
-          <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-contain" />
+          <Image src={uploadedImage} alt="Uploaded" layout="fill" objectFit="contain" />
         </div>
       )}
     </div>

@@ -1,5 +1,9 @@
+// my-app/pages/examples.js
+
 import React from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
+import example1 from '../public/IMG_6335.jpg';
 
 const Examples = () => {
   return (
@@ -15,7 +19,7 @@ const Examples = () => {
         {/* Add your images and results here */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-white p-4 rounded-lg shadow-md">
-            <img src="public/IMG_6335.jpg" alt="Example 1" className="mb-4 rounded-lg" />
+            <Image src={example1} alt="Example 1" className="mb-4 rounded-lg" />
             <p className="text-gray-700">Example description 1</p>
           </div>
           {/* Add more examples as needed */}
