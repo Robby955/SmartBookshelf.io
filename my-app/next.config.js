@@ -9,7 +9,8 @@ module.exports = {
       'new-smartbookshelf-vnbmdiupba-uc.a.run.app',
       'shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app',
       'shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app',
-      'shelf-value-i31lz02s8-robert-s-projects-5f6e9fbd.vercel.app'
+      'shelf-value-i31lz02s8-robert-s-projects-5f6e9fbd.vercel.app',
+      'shelf-value-io.vercel.app'
     ],
   },
   reactStrictMode: true,
