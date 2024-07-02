@@ -24,7 +24,8 @@ origins = [
     "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
     "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app",
     "https://shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app",
-    "https://shelf-value-i31lz02s8-robert-s-projects-5f6e9fbd.vercel.app"
+    "https://shelf-value-i31lz02s8-robert-s-projects-5f6e9fbd.vercel.app",
+    "https://shelf-value-io.vercel.app"
 ]
 
 app.add_middleware(
@@ -39,6 +40,8 @@ app.add_middleware(
 async def add_cors_headers(request: Request, call_next):
     response = await call_next(request)
     response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "OPTIONS,POST,GET"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
 # Set environment variable for Google Application Credentials
