@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 
-
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -16,10 +15,14 @@ export default function Home() {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
+    console.log('File selected:', event.target.files[0]);
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      console.log('No file selected');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -28,6 +31,7 @@ export default function Home() {
     console.log('Backend URL:', backendUrl); // Debugging line
 
     try {
+      console.log('Uploading file...');
       const response = await fetch(`${backendUrl}upload/`, {
         method: 'POST',
         body: formData,
@@ -61,6 +65,7 @@ export default function Home() {
     const selectedText = event.target.value;
 
     try {
+      console.log('Fetching book info...');
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}books/search_book/${encodeURIComponent(selectedText)}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);

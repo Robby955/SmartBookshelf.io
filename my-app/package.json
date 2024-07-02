@@ -16,6 +16,7 @@
     "daisyui": "^2.21.0",
     "firebase": "^10.12.2",
     "fuzzball": "^2.1.2",
+    "http-proxy-middleware": "^3.0.0",
     "next": "latest",
     "postcss": "^8.4.6",
     "react": "latest",

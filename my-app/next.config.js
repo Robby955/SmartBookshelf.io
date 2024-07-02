@@ -1,6 +1,4 @@
-// next.config.js
-
-const isProd = process.env.NODE_ENV === 'production';
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = {
   images: {
@@ -13,8 +11,16 @@ module.exports = {
   },
   reactStrictMode: true,
   env: {
-    NEXT_PUBLIC_BACKEND_URL: isProd
+    NEXT_PUBLIC_BACKEND_URL: process.env.NODE_ENV === 'production'
       ? 'https://new-smartbookshelf-vnbmdiupba-uc.a.run.app/'
       : 'http://localhost:8000/',
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/upload',
+        destination: 'http://localhost:8000/upload',
+      },
+    ];
   },
 };
