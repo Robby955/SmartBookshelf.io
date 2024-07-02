@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Request
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from google.cloud import vision
+from google.cloud import vision, storage
 import os
 import logging
 import traceback
@@ -16,13 +15,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Update allowed origins to include Vercel deployment URL
 origins = [
     "http://localhost:3000",
-    "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
-    "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app",
-    "https://shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app",
-    "https://shelf-value-io.vercel.app"
+    "https://shelf-value-io.vercel.app",
+    "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app"
 ]
 
 app.add_middleware(
@@ -33,21 +29,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Set environment variable for Google Application Credentials
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'credentials.json'
+# Initialize Google Cloud Storage client
+storage_client = storage.Client()
+bucket_name = 'my-book-images-detection'
+bucket = storage_client.bucket(bucket_name)
 
 # Initialize Google Cloud Vision API client
 vision_client = vision.ImageAnnotatorClient()
 
 # Load the YOLOv5 model
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
-
-# Ensure the uploads directory exists
-uploads_dir = 'uploads'
-if not os.path.exists(uploads_dir):
-    os.makedirs(uploads_dir)
-
-app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 def resize_image(image, max_width=400, max_height=600):
     """Resize an image while maintaining aspect ratio."""
@@ -56,17 +47,21 @@ def resize_image(image, max_width=400, max_height=600):
     new_size = (int(w * scaling_factor), int(h * scaling_factor))
     return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the SmartBookshelf API"}
+
 @app.post("/upload/")
 async def upload_book(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         logger.debug("File contents read successfully")
 
-        # Save uploaded image
-        uploaded_image_path = os.path.join(uploads_dir, file.filename)
-        with open(uploaded_image_path, 'wb') as f:
-            f.write(contents)
-        logger.debug(f"Image saved to {uploaded_image_path}")
+        # Save uploaded image to Google Cloud Storage
+        blob = bucket.blob(file.filename)
+        blob.upload_from_string(contents, content_type=file.content_type)
+        uploaded_image_url = blob.public_url
+        logger.debug(f"Image uploaded to {uploaded_image_url}")
 
         # Read image with OpenCV
         img = cv2.imdecode(np.frombuffer(contents, np.uint8), cv2.IMREAD_COLOR)
@@ -83,12 +78,6 @@ async def upload_book(file: UploadFile = File(...)):
         results_np = results.pandas().xyxy[0].to_numpy()
         logger.debug(f"Detection results: {results_np}")
 
-        cropped_dir = os.path.join(uploads_dir, "cropped_books")
-        if not os.path.exists(cropped_dir):
-            os.makedirs(cropped_dir)
-        logger.debug(f"Cropped books directory: {cropped_dir}")
-
-        book_count = 0
         extracted_texts = []
 
         for detection in results_np:
@@ -97,15 +86,15 @@ async def upload_book(file: UploadFile = File(...)):
             if class_name == 'book':
                 book_img = img_rgb[int(y1):int(y2), int(x1):int(x2)]
                 book_img = resize_image(book_img)  # Resize the image
-                book_img_path = os.path.join(cropped_dir, f"book_{book_count}.jpg")
-                book_img_bgr = cv2.cvtColor(book_img, cv2.COLOR_RGB2BGR)
-                cv2.imwrite(book_img_path, book_img_bgr)
-                logger.debug(f"Book image saved to {book_img_path}")
-
-                success, encoded_image = cv2.imencode('.jpg', book_img_bgr)
-                if not success:
-                    raise ValueError("Failed to encode image")
+                _, encoded_image = cv2.imencode('.jpg', book_img)
                 content = encoded_image.tobytes()
+
+                # Save cropped book image to Google Cloud Storage
+                book_blob = bucket.blob(f"cropped_books/book_{x1}_{y1}_{x2}_{y2}.jpg")
+                book_blob.upload_from_string(content, content_type='image/jpeg')
+                book_img_url = book_blob.public_url
+                logger.debug(f"Book image uploaded to {book_img_url}")
+
                 image = vision.Image(content=content)
                 response = vision_client.text_detection(image=image)
                 texts = response.text_annotations
@@ -113,12 +102,10 @@ async def upload_book(file: UploadFile = File(...)):
                     text = texts[0].description
                     extracted_texts.append({
                         "text": text,
-                        "image_path": book_img_path,
-                        "coordinates": {"x1": x1, "y1": y1, "x2": x2, "y2": y2}  # Include coordinates
+                        "image_url": book_img_url,
+                        "coordinates": {"x1": x1, "y1": y1, "x2": x2, "y2": y2}
                     })
                     logger.debug(f"Extracted text: {text}")
-
-                book_count += 1
 
         logger.debug(f"Extracted texts: {extracted_texts}")
 
@@ -130,4 +117,4 @@ async def upload_book(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
