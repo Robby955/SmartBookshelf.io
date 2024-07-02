@@ -23,7 +23,8 @@ origins = [
     "http://localhost:3000",
     "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
     "https://shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app",
-    "https://shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app"
+    "https://shelf-value-io-h5df-grgechind-robert-s-projects-5f6e9fbd.vercel.app",
+    "https://shelf-value-i31lz02s8-robert-s-projects-5f6e9fbd.vercel.app"
 ]
 
 app.add_middleware(
@@ -37,7 +38,7 @@ app.add_middleware(
 @app.middleware("http")
 async def add_cors_headers(request: Request, call_next):
     response = await call_next(request)
-    logger.debug(f"CORS Headers: {response.headers}")
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 # Set environment variable for Google Application Credentials
@@ -51,13 +52,8 @@ model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
 
 # Ensure the uploads directory exists
 uploads_dir = 'uploads'
-cropped_dir = os.path.join(uploads_dir, 'cropped_books')
 if not os.path.exists(uploads_dir):
     os.makedirs(uploads_dir)
-    logger.debug(f"Created uploads directory at {uploads_dir}")
-if not os.path.exists(cropped_dir):
-    os.makedirs(cropped_dir)
-    logger.debug(f"Created cropped_books directory at {cropped_dir}")
 
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
@@ -94,6 +90,11 @@ async def upload_book(file: UploadFile = File(...)):
         # Convert results to numpy array
         results_np = results.pandas().xyxy[0].to_numpy()
         logger.debug(f"Detection results: {results_np}")
+
+        cropped_dir = os.path.join(uploads_dir, "cropped_books")
+        if not os.path.exists(cropped_dir):
+            os.makedirs(cropped_dir)
+        logger.debug(f"Cropped books directory: {cropped_dir}")
 
         book_count = 0
         extracted_texts = []
@@ -135,36 +136,6 @@ async def upload_book(file: UploadFile = File(...)):
         logger.error(traceback.format_exc())
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-'''
-@app.get("/books/search_book/{query}")
-async def search_book(query: str):
-    logger.debug(f"Searching for book with query: {query}")
-    try:
-        async with aiohttp.ClientSession() as session:
-            url = f"http://openlibrary.org/search.json?q={quote(query)}"
-            async with session.get(url) as response:
-                logger.debug(f"Response status: {response.status}")
-                if response.status == 200):
-                    data = await response.json()
-                    logger.debug(f"Response data: {data}")
-                    books = [
-                        {
-                            "title": doc.get("title"),
-                            "author": ", ".join([author for author in doc.get("author_name", [])]),
-                            "publish_year": doc.get("first_publish_year"),
-                            "score": doc.get("score", None)  # Assuming score is available
-                        }
-                        for doc in data.get("docs", [])
-                    ]
-                    logger.debug(f"Books found: {books}")
-                    return {"books": books}
-                else:
-                    raise HTTPException(status_code=response.status, detail="Error fetching book data")
-    except Exception as e:
-        logger.error("Error searching for book: %s", e)
-        logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, detail="Internal server error")
-'''
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
