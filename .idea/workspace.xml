@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my-app/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +19,8 @@
       <list>
         <option value="Dockerfile" />
         <option value="TypeScript File" />
-        <option value="JavaScript File" />
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -78,7 +74,7 @@
     "Python.without_crop.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.google.cloudcode.ide_session_index": "20240624_0000",
+    "com.google.cloudcode.ide_session_index": "20240703_0000",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/backend",
     "node.js.detected.package.eslint": "true",
@@ -153,6 +149,7 @@
       <workItem from="1718656954142" duration="32975000" />
       <workItem from="1719075414267" duration="11864000" />
       <workItem from="1719161875620" duration="114645000" />
+      <workItem from="1720015953843" duration="1302000" />
     </task>
     <servers />
   </component>

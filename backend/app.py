@@ -6,13 +6,14 @@ import traceback
 import torch
 import cv2
 import numpy as np
+from asgiref.wsgi import WsgiToAsgi
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://shelf-value-io.vercel.app", "https://shelf-value-io-36q6.vercel.app", "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes and origins
 
 # Initialize Google Cloud Storage client
 storage_client = storage.Client()
@@ -102,4 +103,8 @@ def home():
     return jsonify({"message": "Welcome to the SmartBookshelf API"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)
+
+# ASGI compatibility
+asgi_app = WsgiToAsgi(app)
