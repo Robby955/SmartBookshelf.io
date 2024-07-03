@@ -1,25 +1,32 @@
-# Use the official Python image from the Docker Hub
+# Use an official Python runtime as a parent image
 FROM python:3.12-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Create a working directory
+# Set the working directory to /app
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any necessary dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the application code
-COPY . /app/
+# Copy the current directory contents into the container at /app
+COPY requirements.txt .
 
-# Set the Google Application Credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS="/app/credentials.json"
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install -r requirements.txt
+RUN pip install gunicorn
 
-# Expose the port the app runs on
+# Copy the application files
+COPY . .
+
+# Copy the credentials file (if needed)
+COPY credentials.json /app/credentials.json
+
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
 # Run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]

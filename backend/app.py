@@ -1,8 +1,6 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from google.cloud import vision, storage
-import os
 import logging
 import traceback
 import torch
@@ -13,22 +11,8 @@ import numpy as np
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
-
-origins = [
-    "http://localhost:3000",
-    "https://shelf-value-io.vercel.app",
-    "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app",
-    "https://shelf-value-io-36q6.vercel.app"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://shelf-value-io.vercel.app", "https://shelf-value-io-36q6.vercel.app", "https://new-smartbookshelf-vnbmdiupba-uc.a.run.app"]}})
 
 # Initialize Google Cloud Storage client
 storage_client = storage.Client()
@@ -48,14 +32,11 @@ def resize_image(image, max_width=400, max_height=600):
     new_size = (int(w * scaling_factor), int(h * scaling_factor))
     return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the SmartBookshelf API"}
-
-@app.post("/upload/")
-async def upload_book(file: UploadFile = File(...)):
+@app.route("/upload/", methods=["POST"])
+def upload_book():
     try:
-        contents = await file.read()
+        file = request.files["file"]
+        contents = file.read()
         logger.debug("File contents read successfully")
 
         # Save uploaded image to Google Cloud Storage
@@ -110,12 +91,15 @@ async def upload_book(file: UploadFile = File(...)):
 
         logger.debug(f"Extracted texts: {extracted_texts}")
 
-        return {"extracted_texts": extracted_texts}
+        return jsonify({"extracted_texts": extracted_texts})
     except Exception as e:
         logger.error("Error processing file: %s", e)
         logger.error(traceback.format_exc())
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/")
+def home():
+    return jsonify({"message": "Welcome to the SmartBookshelf API"})
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080)

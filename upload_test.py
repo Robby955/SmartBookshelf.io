@@ -1,6 +1,6 @@
 import requests
 
-url = "http://localhost:8000/upload/"
+url = 'https://smartbookshelf-backend-vnbmdiupba-nn.a.run.app/upload/'
 file_path = "backend/IMG_6404.jpeg"
 
 with open(file_path, 'rb') as file:

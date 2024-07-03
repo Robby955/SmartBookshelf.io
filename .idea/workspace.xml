@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/middleware/cors.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/middleware/cors.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +80,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.google.cloudcode.ide_session_index": "20240624_0000",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/my-app",
+    "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,9 +93,9 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app\public" />
-      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\static\images" />
     </key>
@@ -187,6 +191,6 @@
     <SUITE FILE_PATH="coverage/SmartShelf$without_crop.coverage" NAME="without_crop Coverage Results" MODIFIED="1719334300873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
     <SUITE FILE_PATH="coverage/SmartShelf$open_library_api.coverage" NAME="open_library_api Coverage Results" MODIFIED="1719098243669" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
     <SUITE FILE_PATH="coverage/SmartShelf$test_image_load.coverage" NAME="test_image_load Coverage Results" MODIFIED="1719240151260" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
-    <SUITE FILE_PATH="coverage/SmartShelf$main.coverage" NAME="main Coverage Results" MODIFIED="1719076174755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SmartShelf$main.coverage" NAME="main Coverage Results" MODIFIED="1719882754572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
