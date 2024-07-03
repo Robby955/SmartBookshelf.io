@@ -1,32 +1,23 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12-slim
+\# Use the official Node.js image.
+FROM node:16-alpine
 
-# Set the working directory to /app
-WORKDIR /app
+# Set the working directory.
+WORKDIR /usr/src/app
 
-# Install any necessary dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+# Copy package.json and package-lock.json to the working directory.
+COPY package*.json ./
 
-# Copy the current directory contents into the container at /app
-COPY requirements.txt .
+# Install dependencies.
+RUN npm install
 
-# Install Python dependencies
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install -r requirements.txt
-RUN pip install gunicorn
-
-# Copy the application files
+# Copy the rest of the application code to the working directory.
 COPY . .
 
-# Copy the credentials file (if needed)
-COPY credentials.json /app/credentials.json
+# Build the Next.js application.
+RUN npm run build
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Expose the port the app runs on.
+EXPOSE 3000
 
-# Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+# Start the Next.js application.
+CMD ["npm", "start"]
