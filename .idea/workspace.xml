@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
-    </list>
+    <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -149,7 +145,7 @@
       <workItem from="1718656954142" duration="32975000" />
       <workItem from="1719075414267" duration="11864000" />
       <workItem from="1719161875620" duration="114645000" />
-      <workItem from="1720015953843" duration="1302000" />
+      <workItem from="1720015953843" duration="1600000" />
     </task>
     <servers />
   </component>
