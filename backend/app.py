@@ -91,32 +91,16 @@ def upload_book():
 
         logger.debug(f"Extracted texts: {extracted_texts}")
 
-        response = jsonify({"extracted_texts": extracted_texts})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT")
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-        return response
+        return jsonify({"extracted_texts": extracted_texts})
     except Exception as e:
         logger.error("Error processing file: %s", e)
         logger.error(traceback.format_exc())
-        response = jsonify({"error": str(e)})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT")
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-        return response, 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/")
 def home():
-    response = jsonify({"message": "Welcome to the SmartBookshelf API"})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
-    return response
+    return jsonify({"message": "Welcome to the SmartBookshelf API"})
 
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=8000)
-
-# ASGI compatibility
-from asgiref.wsgi import WsgiToAsgi
-asgi_app = WsgiToAsgi(app)
+    serve(app, host="0.0.0.0", port=8080)

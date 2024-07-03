@@ -17,44 +17,49 @@ export default function Home() {
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) return;
+const handleUpload = async () => {
+  if (!selectedFile) return;
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
+  const formData = new FormData();
+  formData.append('file', selectedFile);
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    console.log('Backend URL:', backendUrl); // Debugging line
+  let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  console.log('Backend URL:', backendUrl); // Debugging line
 
-    try {
-      const response = await fetch(`${backendUrl}upload/`, {
-        method: 'POST',
-        body: formData,
-      });
+  // Ensure there's a trailing slash
+  if (!backendUrl.endsWith('/')) {
+    backendUrl += '/';
+  }
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
+  try {
+    const response = await fetch(`${backendUrl}upload/`, {
+      method: 'POST',
+      body: formData,
+    });
 
-      const result = await response.json();
-      console.log('Backend response:', result);
-      if (result.extracted_texts) {
-        const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
-        setExtractedTexts(sortedBooks);
-        setBookCount(sortedBooks.length);
-        setBookInfo(null);
-        bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
-      } else {
-        console.error('No extracted texts found in the response:', result);
-        setError('No extracted texts found.');
-        setBookCount(null);
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setError('Error uploading file, please try again.');
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log('Backend response:', result);
+    if (result.extracted_texts) {
+      const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
+      setExtractedTexts(sortedBooks);
+      setBookCount(sortedBooks.length);
+      setBookInfo(null);
+      bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
+    } else {
+      console.error('No extracted texts found in the response:', result);
+      setError('No extracted texts found.');
       setBookCount(null);
     }
-  };
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    setError('Error uploading file, please try again.');
+    setBookCount(null);
+  }
+};
 
   const handleBookSelect = async (event) => {
     const selectedText = event.target.value;
