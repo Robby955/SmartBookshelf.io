@@ -9,6 +9,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
   const [bookInfo, setBookInfo] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const bookRefs = useRef([]);
 
@@ -17,55 +18,54 @@ export default function Home() {
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
   };
 
-const handleUpload = async () => {
-  if (!selectedFile) return;
+  const handleUpload = async () => {
+    if (!selectedFile) return;
 
-  const formData = new FormData();
-  formData.append('file', selectedFile);
+    setIsAnalyzing(true); // Show analyzing message
 
-  let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log('Backend URL:', backendUrl); // Debugging line
+    const formData = new FormData();
+    formData.append('file', selectedFile);
 
-  // Ensure there's a trailing slash
-  if (!backendUrl.endsWith('/')) {
-    backendUrl += '/';
-  }
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    console.log('Backend URL:', backendUrl); // Debugging line
 
-  try {
-    const response = await fetch(`${backendUrl}upload/`, {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch(`${backendUrl}/upload/`, {
+        method: 'POST',
+        body: formData,
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
 
-    const result = await response.json();
-    console.log('Backend response:', result);
-    if (result.extracted_texts) {
-      const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
-      setExtractedTexts(sortedBooks);
-      setBookCount(sortedBooks.length);
-      setBookInfo(null);
-      bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
-    } else {
-      console.error('No extracted texts found in the response:', result);
-      setError('No extracted texts found.');
+      const result = await response.json();
+      console.log('Backend response:', result);
+      if (result.extracted_texts) {
+        const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
+        setExtractedTexts(sortedBooks);
+        setBookCount(sortedBooks.length);
+        setBookInfo(null);
+        bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
+      } else {
+        console.error('No extracted texts found in the response:', result);
+        setError('No extracted texts found.');
+        setBookCount(null);
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setError('Error uploading file, please try again.');
       setBookCount(null);
+    } finally {
+      setIsAnalyzing(false); // Hide analyzing message
     }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    setError('Error uploading file, please try again.');
-    setBookCount(null);
-  }
-};
+  };
 
   const handleBookSelect = async (event) => {
     const selectedText = event.target.value;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}books/search_book/${encodeURIComponent(selectedText)}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books/search_book/${encodeURIComponent(selectedText)}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -88,16 +88,29 @@ const handleUpload = async () => {
       <Head>
         <title>SmartBookshelf.io</title>
         <meta name="description" content="Upload a book image and extract text" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-lg flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-white mb-6">SmartBookshelf.io</h1>
+      <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
+        <h1 className="text-5xl font-extrabold text-white mb-6">SmartBookshelf.io</h1>
+
+        <div className="text-white mb-8 text-center">
+          <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
+          <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
+          <ol className="list-decimal list-inside text-left text-lg">
+            <li className="mb-2">Click the "Choose File" button below.</li>
+            <li className="mb-2">Select a photo of your bookshelf or take a new one.</li>
+            <li className="mb-2">Click "Upload" to analyze the image and extract book titles.</li>
+          </ol>
+        </div>
 
         <div className="w-full mb-6">
           <input
             type="file"
+            accept="image/*"
+            capture="camera"
             onChange={handleFileChange}
-            className="mb-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+            className="mb-4 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
           />
           {bookCount !== null && (
             <div className="w-full text-center text-xl font-bold white mb-4">
@@ -106,7 +119,7 @@ const handleUpload = async () => {
           )}
           {extractedTexts.length > 0 && (
             <div className="w-full mb-4">
-              <label htmlFor="books-dropdown" className="block mb-2 text-sm font-bold text-white">
+              <label htmlFor="books-dropdown" className="block mb-2 text-lg font-bold text-white">
                 Select a Book Title:
               </label>
               <select
@@ -130,9 +143,9 @@ const handleUpload = async () => {
           )}
           <button
             onClick={handleUpload}
-            className="btn btn-primary w-full"
+            className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
           >
-            Upload
+            {isAnalyzing ? 'Analyzing...' : 'Upload'}
           </button>
         </div>
 

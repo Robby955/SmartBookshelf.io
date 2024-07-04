@@ -5,14 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c326612a-64f4-4890-bf91-35753b839a9c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/my-app/pages/bookshelf.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/public/example1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/public/example2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/my-app/public/example3.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/.env.production" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my-app/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/firebase.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/firebase.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my-app/next.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/next.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/pages/about.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/about.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/pages/examples.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/examples.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/pages/faq.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/faq.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my-app/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/pages/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/pages/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-app/styles/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/my-app/styles/globals.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,8 +107,8 @@
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\static\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\my-app\public" />
+      <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf" />
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\frontend\images" />
     </key>
@@ -154,7 +160,7 @@
       <workItem from="1718656954142" duration="32975000" />
       <workItem from="1719075414267" duration="11864000" />
       <workItem from="1719161875620" duration="114645000" />
-      <workItem from="1720015953843" duration="8514000" />
+      <workItem from="1720015953843" duration="24991000" />
     </task>
     <servers />
   </component>

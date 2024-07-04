@@ -1,5 +1,3 @@
-// my-app/components/Header.js
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
@@ -17,15 +15,12 @@ const Header = () => {
             <a className="text-white text-xl font-bold">SmartBookshelf</a>
           </Link>
         </div>
-        <nav className="space-x-4">
+        <nav className="space-x-4 flex items-center">
           <Link href="/" legacyBehavior>
             <a className="text-white">Home</a>
           </Link>
           <Link href="/about" legacyBehavior>
-            <a className="text-white">About Us</a>
-          </Link>
-          <Link href="/faq" legacyBehavior>
-            <a className="text-white">FAQ</a>
+            <a className="text-white">About</a>
           </Link>
           <Link href="/examples" legacyBehavior>
             <a className="text-white">Examples</a>
@@ -38,10 +33,14 @@ const Header = () => {
               <Link href="/user" legacyBehavior>
                 <a className="text-white">My Books</a>
               </Link>
-              <button onClick={logout} className="bg-purple-500 text-white px-4 py-2 rounded">Logout</button>
+              <button onClick={logout} className="bg-purple-500 text-white px-4 py-2 rounded">
+                Logout
+              </button>
             </>
           ) : (
-            <button onClick={signInWithGoogle} className="bg-purple-500 text-white px-4 py-2 rounded">Login</button>
+            <button onClick={signInWithGoogle} className="bg-purple-500 text-white px-4 py-2 rounded">
+              Login
+            </button>
           )}
         </nav>
       </div>

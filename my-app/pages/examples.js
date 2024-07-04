@@ -1,28 +1,38 @@
-// my-app/pages/examples.js
-
 import React from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import example1 from '../public/IMG_6335.jpg';
 
 const Examples = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex flex-col items-center py-12">
       <Head>
         <title>Examples - SmartBookshelf.io</title>
-        <meta name="description" content="Examples of SmartBookshelf.io in action" />
+        <meta name="description" content="Examples of how to use SmartBookshelf.io" />
       </Head>
 
-      <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg flex flex-col items-center">
+      <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-lg flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-6">Examples</h1>
-        <p className="mb-6 text-gray-700">Here we will showcase images and results processed by SmartBookshelf.io.</p>
-        {/* Add your images and results here */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <Image src={example1} alt="Example 1" className="mb-4 rounded-lg" />
-            <p className="text-gray-700">Example description 1</p>
+        <div className="w-full">
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 1: Uploading a Bookshelf Image</h2>
+          <p className="mb-6 text-white">
+            Upload an image of your bookshelf, and our application will detect the books and extract the titles for you.
+          </p>
+          <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
+            <Image src="/example1.png" alt="Example 1" layout="fill" objectFit="contain" />
           </div>
-          {/* Add more examples as needed */}
+
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 2: Extracted Book Titles</h2>
+          <p className="mb-6 text-white">
+            Here are the titles that were extracted from the uploaded image.
+          </p>
+          <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
+            <Image src="/example2.png" alt="Example 2" layout="fill" objectFit="contain" />
+          </div>
+          <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
+            <Image src="/example3.png" alt="Example 3" layout="fill" objectFit="contain" />
+          </div>
+
+          {/* Additional examples can be added here */}
         </div>
       </div>
     </div>

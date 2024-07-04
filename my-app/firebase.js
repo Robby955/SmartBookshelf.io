@@ -1,6 +1,6 @@
-// firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDuFLvTbB_f3ZkycBpTYMCdHsI-A3w86rU",
@@ -12,8 +12,15 @@ const firebaseConfig = {
   measurementId: "G-measurement-id"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
+
+// Initialize Firestore and get a reference to the service
+const db = getFirestore(app);
+
 const provider = new GoogleAuthProvider();
 
 const signInWithGoogle = () => {
@@ -36,4 +43,4 @@ const logout = () => {
     });
 };
 
-export { auth, signInWithGoogle, logout };
+export { auth, db, signInWithGoogle, logout };

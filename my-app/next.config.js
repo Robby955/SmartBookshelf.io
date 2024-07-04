@@ -6,9 +6,8 @@ module.exports = {
       'localhost',
       'https://smartbookshelf-backend-vnbmdiupba-nn.a.run.app',
       'new-smartbookshelf-vnbmdiupba-uc.a.run.app',
-      'shelf-value-hd3z9i1jo-robert-s-projects-5f6e9fbd.vercel.app',
-      'shelf-value-io-h5df-b09c5d3mv-robert-s-projects-5f6e9fbd.vercel.app',
-      'storage.googleapis.com'
+      'storage.googleapis.com',
+      'SmartBookshelf.io',
     ],
   },
   reactStrictMode: true,
