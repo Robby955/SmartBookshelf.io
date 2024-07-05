@@ -20,6 +20,7 @@
     "next": "latest",
     "postcss": "^8.4.6",
     "react": "latest",
+    "react-csv": "^2.2.2",
     "react-dom": "latest",
     "tailwindcss": "^3.0.23",
     "unidecode": "^1.1.0"

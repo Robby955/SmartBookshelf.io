@@ -96,7 +96,7 @@ export default function Home() {
       </Head>
 
       <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
-        <h1 className="text-5xl font-extrabold text-white mb-6">SmartBookshelf.io</h1>
+
 
         <div className="text-white mb-8 text-center">
           <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
@@ -152,6 +152,12 @@ export default function Home() {
             {isAnalyzing ? 'Analyzing...' : 'Upload'}
           </button>
         </div>
+
+        {isAnalyzing && (
+          <div className="w-full text-center text-lg font-bold text-white mb-4">
+            Analyzing...
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {extractedTexts.map((item, index) => (

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
-import { signInWithGoogle, logout } from '../firebase';
+import { signInWithGoogle, signInWithGithub, logout } from '../firebase';
 
 const Header = () => {
   const { user } = useAuth();
@@ -25,9 +25,6 @@ const Header = () => {
           <Link href="/examples" legacyBehavior>
             <a className="text-white">Examples</a>
           </Link>
-          <Link href="/feedback" legacyBehavior>
-            <a className="text-white">Feedback</a>
-          </Link>
           {user ? (
             <>
               <Link href="/user" legacyBehavior>
@@ -38,9 +35,30 @@ const Header = () => {
               </button>
             </>
           ) : (
-            <button onClick={signInWithGoogle} className="bg-purple-500 text-white px-4 py-2 rounded">
-              Login
-            </button>
+            <div className="relative group">
+              <button className="bg-purple-500 text-white px-4 py-2 rounded">
+                Login
+              </button>
+              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <a
+                  onClick={signInWithGoogle}
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                >
+                  Login with Google
+                </a>
+                <a
+                  onClick={signInWithGithub}
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
+                >
+                  Login with GitHub
+                </a>
+                <Link href="/login">
+                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
+                    Login with Email
+                  </a>
+                </Link>
+              </div>
+            </div>
           )}
         </nav>
       </div>

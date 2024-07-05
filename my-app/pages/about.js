@@ -25,7 +25,7 @@ const About = () => {
           </ul>
 
           <h2 className="text-2xl font-semibold mb-4 text-white">Get in Touch</h2>
-          <p className="text-white">If you have any questions, feedback, or suggestions, we&apos;d love to hear from you! Feel free to reach out using the feedback form.</p>
+          <p className="text-white">If you have any questions, feedback, or suggestions, we&apos;d love to hear from you! Feel free to reach out using the feedback form. You can also reach me at robbysneiderman@gmail.com</p>
 
           <h2 className="text-2xl font-semibold mb-4 text-white mt-12">Frequently Asked Questions</h2>
           <h3 className="text-xl font-semibold mb-2 text-white">What is SmartBookshelf.io?</h3>

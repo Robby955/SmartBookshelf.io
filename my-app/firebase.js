@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, fetchSignInMethodsForEmail } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -21,26 +21,58 @@ const auth = getAuth(app);
 // Initialize Firestore and get a reference to the service
 const db = getFirestore(app);
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
-const signInWithGoogle = () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      console.log(result.user);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+const signInWithGoogle = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+  } catch (error) {
+    handleAuthError(error);
+  }
 };
 
-const logout = () => {
-  signOut(auth)
-    .then(() => {
-      console.log("User signed out");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+const signInWithGithub = async () => {
+  try {
+    await signInWithPopup(auth, githubProvider);
+  } catch (error) {
+    handleAuthError(error);
+  }
 };
 
-export { auth, db, signInWithGoogle, logout };
+const signInWithEmail = async (email, password) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    handleAuthError(error);
+  }
+};
+
+const signUpWithEmail = async (email, password) => {
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    handleAuthError(error);
+  }
+};
+
+const logout = async () => {
+  try {
+    await signOut(auth);
+    console.log("User signed out");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleAuthError = async (error) => {
+  if (error.code === 'auth/account-exists-with-different-credential') {
+    const existingEmail = error.customData.email;
+    const signInMethods = await fetchSignInMethodsForEmail(auth, existingEmail);
+    alert(`An account already exists with the same email address but different sign-in credentials. Sign in using: ${signInMethods.join(', ')}`);
+  } else {
+    console.error(error);
+  }
+};
+
+export { auth, db, signInWithGoogle, signInWithGithub, signInWithEmail, signUpWithEmail, logout };
