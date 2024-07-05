@@ -10,7 +10,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden; /* Ensure no horizontal overflow */
 }
 
 .upload-container {
@@ -19,7 +19,6 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  width: 100%; /* Ensure full width */
 }
 
 .dropdown-item-black {
@@ -32,7 +31,6 @@ body {
 
 input[type="file"] {
   margin-bottom: 10px;
-  width: 100%; /* Ensure full width */
 }
 
 button {
@@ -44,8 +42,6 @@ button {
   cursor: pointer;
   display: inline-block;
   text-align: center;
-  width: 100%; /* Ensure full width */
-  max-width: 200px; /* Limit maximum width */
 }
 
 button:hover {
@@ -63,8 +59,7 @@ button:disabled {
 }
 
 .container {
-  max-width: 1200px; /* Maximum width */
-  width: 100%; /* Full width */
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
   color: #ffffff; /* Light text color */
@@ -120,6 +115,7 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
+    width: 100%;
   }
 
   .upload-container {
@@ -128,8 +124,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   button {
-    width: 100%; /* Full width button for mobile */
-    padding: 10px; /* Reduced padding for better fit on small screens */
+    width: 100%;
+    padding: 15px;
   }
 
   .card {
@@ -146,28 +142,10 @@ h1, h2, h3, h4, h5, h6 {
     max-height: none;
   }
 
-  /* Adjusting text sizes for better readability on small screens */
-  .text-lg {
-    font-size: 1rem;
-  }
-
-  .text-xl {
-    font-size: 1.25rem;
-  }
-
-  .text-2xl {
-    font-size: 1.5rem;
-  }
-
-  .text-3xl {
-    font-size: 1.75rem;
-  }
-
-  .text-4xl {
-    font-size: 2rem;
-  }
-
-  .text-5xl {
-    font-size: 2.25rem;
+  .header-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 }

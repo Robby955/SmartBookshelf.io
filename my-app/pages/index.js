@@ -16,10 +16,14 @@ export default function Home() {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
+    setError(''); // Clear any previous error
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      setError('Please upload a photo first');
+      return;
+    }
 
     setIsAnalyzing(true); // Show analyzing message
 
@@ -98,9 +102,9 @@ export default function Home() {
           <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
           <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
           <ol className="list-decimal list-inside text-left text-lg">
-            <li className="mb-2">Click the "Choose File" button below.</li>
+            <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
             <li className="mb-2">Select a photo of your bookshelf or take a new one.</li>
-            <li className="mb-2">Click "Upload" to analyze the image and extract book titles.</li>
+            <li className="mb-2">Click &quot;Upload&quot; to analyze the image and extract book titles.</li>
           </ol>
         </div>
 
@@ -108,7 +112,6 @@ export default function Home() {
           <input
             type="file"
             accept="image/*"
-            capture="camera"
             onChange={handleFileChange}
             className="mb-4 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
           />
@@ -144,6 +147,7 @@ export default function Home() {
           <button
             onClick={handleUpload}
             className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
+            disabled={isAnalyzing}
           >
             {isAnalyzing ? 'Analyzing...' : 'Upload'}
           </button>
