@@ -6,6 +6,7 @@ import traceback
 import torch
 import cv2
 import numpy as np
+import asyncio
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -32,8 +33,17 @@ def resize_image(image, max_width=400, max_height=600):
     new_size = (int(w * scaling_factor), int(h * scaling_factor))
     return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
 
+async def detect_text(image_content):
+    try:
+        image = vision.Image(content=image_content)
+        response = await vision_client.text_detection(image=image)
+        return response.text_annotations
+    except Exception as e:
+        logger.error("Error in text detection: %s", e)
+        return []
+
 @app.route("/upload/", methods=["POST"])
-def upload_book():
+async def upload_book():
     try:
         file = request.files["file"]
         contents = file.read()
@@ -77,9 +87,7 @@ def upload_book():
                 book_img_url = book_blob.public_url
                 logger.debug(f"Book image uploaded to {book_img_url}")
 
-                image = vision.Image(content=content)
-                response = vision_client.text_detection(image=image)
-                texts = response.text_annotations
+                texts = await detect_text(content)
                 if texts:
                     text = texts[0].description
                     extracted_texts.append({
