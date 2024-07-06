@@ -17,3 +17,16 @@ Trained on thousands of such examples could also consider how the characters are
 
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000/
 for running localy
+
+
+
+
+# 2024/07/06
+docker build -t gcr.io/smartshelf-426516/smartbookshelf-backend-v1.5 .
+docker push gcr.io/smartshelf-426516/smartbookshelf-backend-v1.5
+gcloud run deploy smartbookshelf-backend --image gcr.io/smartshelf-426516/smartbookshelf-backend-v1.5 --platform managed --region northamerica-northeast1 --allow-unauthenticated --memory 4Gi --cpu 2 --min-instances 1
+
+
+To Add:
+
+Multi batch processing, able to do higher resolution images with more than just a few books.

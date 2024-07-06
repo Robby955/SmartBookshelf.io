@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify
+import csv
+from io import StringIO
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from google.cloud import vision, storage
 import logging
@@ -6,7 +8,13 @@ import traceback
 import torch
 import cv2
 import numpy as np
-import asyncio
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate("credentials.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -33,19 +41,11 @@ def resize_image(image, max_width=400, max_height=600):
     new_size = (int(w * scaling_factor), int(h * scaling_factor))
     return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
 
-async def detect_text(image_content):
-    try:
-        image = vision.Image(content=image_content)
-        response = await vision_client.text_detection(image=image)
-        return response.text_annotations
-    except Exception as e:
-        logger.error("Error in text detection: %s", e)
-        return []
-
 @app.route("/upload/", methods=["POST"])
-async def upload_book():
+def upload_book():
     try:
         file = request.files["file"]
+        user_id = request.form.get('userID')  # Ensure userID is passed from frontend
         contents = file.read()
         logger.debug("File contents read successfully")
 
@@ -87,7 +87,9 @@ async def upload_book():
                 book_img_url = book_blob.public_url
                 logger.debug(f"Book image uploaded to {book_img_url}")
 
-                texts = await detect_text(content)
+                image = vision.Image(content=content)
+                response = vision_client.text_detection(image=image)
+                texts = response.text_annotations
                 if texts:
                     text = texts[0].description
                     extracted_texts.append({
@@ -97,11 +99,53 @@ async def upload_book():
                     })
                     logger.debug(f"Extracted text: {text}")
 
+                    # Save to Firestore
+                    doc_ref = db.collection('uploads').document()
+                    doc_ref.set({
+                        'imageURL': book_img_url,
+                        'text': text,
+                        'userId': user_id
+                    })
+                    logger.debug(f"Saved to Firestore: {text}")
+
+        # Update total uploads in the user's document
+        user_doc_ref = db.collection('users').document(user_id)
+        user_doc_ref.update({
+            'total_uploads': firestore.Increment(len(extracted_texts))
+        })
+
         logger.debug(f"Extracted texts: {extracted_texts}")
 
         return jsonify({"extracted_texts": extracted_texts})
     except Exception as e:
         logger.error("Error processing file: %s", e)
+        logger.error(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/export-csv", methods=["GET"])
+def export_csv():
+    try:
+        user_id = request.args.get('userId')
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+
+        # Fetch user books from Firestore
+        books_ref = db.collection('uploads').where('userId', '==', user_id)
+        docs = books_ref.stream()
+
+        # Create a CSV file in memory
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(['Text', 'Image URL'])
+
+        for doc in docs:
+            book = doc.to_dict()
+            writer.writerow([book['text'], book['imageURL']])
+
+        output.seek(0)
+        return send_file(output, mimetype='text/csv', attachment_filename='books.csv', as_attachment=True)
+    except Exception as e:
+        logger.error("Error exporting CSV: %s", e)
         logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 

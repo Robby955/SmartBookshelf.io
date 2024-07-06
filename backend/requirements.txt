@@ -12,3 +12,4 @@ flask
 gunicorn
 waitress==2.1.2
 asgiref==3.5.2
+firebase_admin
