@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import { CSVLink } from 'react-csv';
 
@@ -11,7 +11,8 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalUploads, setTotalUploads] = useState(0);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [newBookText, setNewBookText] = useState('');
+  const [editingBook, setEditingBook] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -25,13 +26,11 @@ const UserPage = () => {
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
-        if (!userDoc.exists()) {
-          console.log(`No user data found for user: ${user.uid}. Creating user document.`);
-          await setDoc(userDocRef, { username: user.displayName, total_uploads: 0 });
-          setTotalUploads(0);
-        } else {
+        if (userDoc.exists()) {
           console.log('User data:', userDoc.data());
           setTotalUploads(userDoc.data().total_uploads);
+        } else {
+          console.log(`No user data found for user: ${user.uid}.`);
         }
 
         const q = query(collection(db, 'uploads'), where('userId', '==', user.uid));
@@ -61,45 +60,58 @@ const UserPage = () => {
       setBooks(books.filter(book => book.id !== id));
       const newTotalUploads = totalUploads - 1;
       setTotalUploads(newTotalUploads);
-      await setDoc(doc(db, 'users', user.uid), { total_uploads: newTotalUploads }, { merge: true });
+      await updateDoc(doc(db, 'users', user.uid), { total_uploads: newTotalUploads });
     } catch (err) {
       console.error('Error deleting book:', err);
       setError('Failed to delete book. Please try again later.');
     }
   };
 
-  const handleFileUpload = async () => {
-    if (!selectedFile) {
-      setError('No file selected.');
+  const handleAddBook = async () => {
+    if (!newBookText) {
+      setError('Please provide text for the new book.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
+    try {
+      const newBookRef = doc(collection(db, 'uploads'));
+      const newBook = {
+        text: newBookText,
+        userId: user.uid,
+      };
+      await setDoc(newBookRef, newBook);
+      setBooks([...books, { id: newBookRef.id, ...newBook }]);
+      const newTotalUploads = totalUploads + 1;
+      setTotalUploads(newTotalUploads);
+      await updateDoc(doc(db, 'users', user.uid), { total_uploads: newTotalUploads });
+      setNewBookText('');
+    } catch (err) {
+      console.error('Error adding book:', err);
+      setError('Failed to add book. Please try again later.');
+    }
+  };
 
-    // Only append userID if user is logged in
-    if (user) {
-      formData.append('userID', user.uid);
+  const handleEditBook = (book) => {
+    setEditingBook(book);
+    setNewBookText(book.text);
+  };
+
+  const handleUpdateBook = async () => {
+    if (!newBookText) {
+      setError('Please provide text for the book.');
+      return;
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    console.log('Backend URL:', backendUrl); // Debugging line
-
     try {
-      const response = await fetch(backendUrl, {
-        method: 'POST',
-        body: formData,
+      await updateDoc(doc(db, 'uploads', editingBook.id), {
+        text: newBookText,
       });
-
-      if (!response.ok) {
-        throw new Error('File upload failed');
-      }
-
-      console.log('File uploaded successfully');
-      // Optionally refresh the book list
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setError('Failed to upload file. Please try again later.');
+      setBooks(books.map(book => (book.id === editingBook.id ? { ...book, text: newBookText } : book)));
+      setEditingBook(null);
+      setNewBookText('');
+    } catch (err) {
+      console.error('Error updating book:', err);
+      setError('Failed to update book. Please try again later.');
     }
   };
 
@@ -117,6 +129,25 @@ const UserPage = () => {
       <h1 className="text-2xl font-bold mb-4">My Books</h1>
       {user && <p>Total Uploads: {totalUploads}</p>}
       {error && <p className="text-red-500">{error}</p>}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Book Text"
+          value={newBookText}
+          onChange={(e) => setNewBookText(e.target.value)}
+          className="mb-2 p-2 border rounded"
+          style={{ color: 'black' }}
+        />
+        {editingBook ? (
+          <button onClick={handleUpdateBook} className="bg-green-500 text-white px-4 py-2 rounded">
+            Update Book
+          </button>
+        ) : (
+          <button onClick={handleAddBook} className="bg-blue-500 text-white px-4 py-2 rounded">
+            Add Book
+          </button>
+        )}
+      </div>
       {books.length > 0 ? (
         <>
           {user && (
@@ -135,12 +166,20 @@ const UserPage = () => {
                 <p className="font-bold">{book.text}</p>
                 <p><a href={book.imageURL} target="_blank" rel="noopener noreferrer">View Image</a></p>
                 {user && (
-                  <button
-                    onClick={() => handleDelete(book.id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded mt-2"
-                  >
-                    Delete
-                  </button>
+                  <>
+                    <button
+                      onClick={() => handleEditBook(book)}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded mt-2 mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(book.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded mt-2"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
               </li>
             ))}
@@ -149,10 +188,6 @@ const UserPage = () => {
       ) : (
         <p>No books found.</p>
       )}
-      <div className="mt-4">
-        <input type="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
-        <button onClick={handleFileUpload} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">Upload File</button>
-      </div>
       {!user && (
         <div className="container mx-auto p-4">
           <p className="text-xl">Please <Link href="/login"><a className="text-blue-500 underline">log in</a></Link> to see your books.</p>

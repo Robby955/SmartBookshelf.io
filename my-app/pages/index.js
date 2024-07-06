@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, doc, collection, runTransaction } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
 
@@ -42,41 +42,20 @@ export default function Home() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        fetchUserData(user.uid);
-        fetchBooks(user.uid);
       } else {
         setUser(null);
       }
     });
+
+    // Clear state on component mount (i.e., on refresh)
+    setSelectedFile(null);
+    setUploadedImage(null);
+    setExtractedTexts([]);
+    setError('');
+    setBookCount(null);
+    setBookInfo(null);
+    setIsAnalyzing(false);
   }, []);
-
-  const fetchUserData = async (userId) => {
-    try {
-      const userRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
-        console.log('User data:', userDoc.data());
-      } else {
-        console.log('No user data found for user:', userId);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
-
-  const fetchBooks = async (userId) => {
-    try {
-      const q = query(collection(db, 'uploads'), where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
-      const books = querySnapshot.docs.map(doc => doc.data());
-      setExtractedTexts(books);
-      setBookCount(books.length);
-      console.log('Fetched books:', books);
-    } catch (error) {
-      console.error('Error fetching books:', error);
-      setError('Failed to fetch books. Please try again later.');
-    }
-  };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -121,6 +100,24 @@ export default function Home() {
         setBookCount(sortedBooks.length);
         setBookInfo(null);
         bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
+
+        // Update Firestore with new books and increment total uploads using a transaction
+        await runTransaction(db, async (transaction) => {
+          const userDocRef = doc(db, 'users', user.uid);
+
+          // Get the current total_uploads value
+          const userDoc = await transaction.get(userDocRef);
+          const newTotalUploads = (userDoc.data().total_uploads || 0) + sortedBooks.length;
+
+          sortedBooks.forEach((book) => {
+            const newBookRef = doc(collection(db, 'uploads'));
+            transaction.set(newBookRef, { ...book, userId: user.uid });
+          });
+
+          transaction.update(userDocRef, { total_uploads: newTotalUploads });
+        });
+
+        console.log('Firestore updated successfully');
       } else {
         console.error('No extracted texts found in the response:', result);
         setError('No extracted texts found.');
@@ -183,7 +180,7 @@ export default function Home() {
             onChange={handleFileChange}
             className="mb-4 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
           />
-          {bookCount !== null && (
+          {bookCount !== null && bookCount > 0 && (
             <div className="w-full text-center text-xl font-bold white mb-4">
               # of Books Detected: {bookCount}
             </div>
