@@ -1,6 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { initializeApp, getApps } from 'firebase/app';
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+};
+
+// Initialize Firebase
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
+
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -10,8 +34,49 @@ export default function Home() {
   const [bookCount, setBookCount] = useState(null);
   const [bookInfo, setBookInfo] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [user, setUser] = useState(null);
 
   const bookRefs = useRef([]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        fetchUserData(user.uid);
+        fetchBooks(user.uid);
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
+
+  const fetchUserData = async (userId) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        console.log('User data:', userDoc.data());
+      } else {
+        console.log('No user data found for user:', userId);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  const fetchBooks = async (userId) => {
+    try {
+      const q = query(collection(db, 'uploads'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      const books = querySnapshot.docs.map(doc => doc.data());
+      setExtractedTexts(books);
+      setBookCount(books.length);
+      console.log('Fetched books:', books);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+      setError('Failed to fetch books. Please try again later.');
+    }
+  };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -29,6 +94,11 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append('file', selectedFile);
+
+    // Only append userID if user is logged in
+    if (user) {
+      formData.append('userID', user.uid);
+    }
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     console.log('Backend URL:', backendUrl); // Debugging line
@@ -96,8 +166,6 @@ export default function Home() {
       </Head>
 
       <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
-
-
         <div className="text-white mb-8 text-center">
           <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
           <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
