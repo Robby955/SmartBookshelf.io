@@ -7,7 +7,7 @@ const Header = () => {
   const { user } = useAuth();
 
   return (
-    <header className="bg-gray-800 p-4">
+    <header className="bg-gradient-to-r from-blue-500 to-purple-600 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="SmartBookshelf Logo" width={32} height={32} />
@@ -35,30 +35,11 @@ const Header = () => {
               </button>
             </>
           ) : (
-            <div className="relative group">
-              <button className="bg-purple-500 text-white px-4 py-2 rounded">
-                Login
-              </button>
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <a
-                  onClick={signInWithGoogle}
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
-                >
-                  Login with Google
-                </a>
-                <a
-                  onClick={signInWithGithub}
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer"
-                >
-                  Login with GitHub
-                </a>
-                <Link href="/login">
-                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
-                    Login with Email
-                  </a>
-                </Link>
-              </div>
-            </div>
+            <>
+              <Link href="/auth" legacyBehavior>
+                <a className="text-white">Login</a>
+              </Link>
+            </>
           )}
         </nav>
       </div>

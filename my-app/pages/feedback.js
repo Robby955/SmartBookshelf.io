@@ -13,7 +13,7 @@ const Feedback = () => {
         <h1 className="text-4xl font-bold text-white mb-6">Feedback</h1>
         <form className="w-full max-w-md">
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="name">
               Name
             </label>
             <input
@@ -24,7 +24,7 @@ const Feedback = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
               Email
             </label>
             <input
@@ -35,7 +35,7 @@ const Feedback = () => {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="message">
               Message
             </label>
             <textarea

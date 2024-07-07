@@ -63,44 +63,46 @@ export default function Home() {
     setError(''); // Clear any previous error
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      setError('Please upload a photo first');
-      return;
+ const handleUpload = async () => {
+  if (!selectedFile) {
+    setError('Please upload a photo first');
+    return;
+  }
+
+  setIsAnalyzing(true); // Show analyzing message
+
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+
+  // Only append userID if user is logged in
+  if (user) {
+    formData.append('userID', user.uid);
+  }
+
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  console.log('Backend URL:', backendUrl); // Debugging line
+
+  try {
+    const response = await fetch(`${backendUrl}/upload/`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
     }
 
-    setIsAnalyzing(true); // Show analyzing message
+    const result = await response.json();
+    console.log('Backend response:', result);
+    if (result.extracted_texts) {
+      const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
+      setExtractedTexts(sortedBooks);
+      setBookCount(sortedBooks.length);
+      setBookInfo(null);
+      bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
-    // Only append userID if user is logged in
-    if (user) {
-      formData.append('userID', user.uid);
-    }
-
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    console.log('Backend URL:', backendUrl); // Debugging line
-
-    try {
-      const response = await fetch(`${backendUrl}/upload/`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      console.log('Backend response:', result);
-      if (result.extracted_texts) {
-        const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
-        setExtractedTexts(sortedBooks);
-        setBookCount(sortedBooks.length);
-        setBookInfo(null);
-        bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
-
+      // Only update Firestore if the user is logged in
+      if (user) {
         // Update Firestore with new books and increment total uploads using a transaction
         await runTransaction(db, async (transaction) => {
           const userDocRef = doc(db, 'users', user.uid);
@@ -118,19 +120,20 @@ export default function Home() {
         });
 
         console.log('Firestore updated successfully');
-      } else {
-        console.error('No extracted texts found in the response:', result);
-        setError('No extracted texts found.');
-        setBookCount(null);
       }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setError('Error uploading file, please try again.');
+    } else {
+      console.error('No extracted texts found in the response:', result);
+      setError('No extracted texts found.');
       setBookCount(null);
-    } finally {
-      setIsAnalyzing(false); // Hide analyzing message
     }
-  };
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    setError('Error uploading file, please try again.');
+    setBookCount(null);
+  } finally {
+    setIsAnalyzing(false); // Hide analyzing message
+  }
+};
 
   const handleBookSelect = async (event) => {
     const selectedText = event.target.value;
