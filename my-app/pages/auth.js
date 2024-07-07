@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
-=======
-import React, { useState } from 'react'; // Remove Link import
->>>>>>> 9fd3a29 (debug and improve auth)
+import { useRouter } from 'next/router';
 import { signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithGithub, resetPassword } from '../firebase';
 
 const Auth = () => {
@@ -10,6 +7,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,8 +16,10 @@ const Auth = () => {
       if (isSigningUp) {
         await signUpWithEmail(email, password);
         alert('Registration successful. Please check your email for verification.');
+        router.push('/'); // Redirect after successful sign up
       } else {
         await signInWithEmail(email, password);
+        router.push('/'); // Redirect after successful login
       }
     } catch (error) {
       console.error('Error during authentication:', error);
@@ -43,6 +43,26 @@ const Auth = () => {
       alert(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.push('/'); // Redirect after successful Google login
+    } catch (error) {
+      console.error('Error during Google authentication:', error);
+      alert(error.message);
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      await signInWithGithub();
+      router.push('/'); // Redirect after successful GitHub login
+    } catch (error) {
+      console.error('Error during GitHub authentication:', error);
+      alert(error.message);
     }
   };
 
@@ -94,14 +114,14 @@ const Auth = () => {
         <div className="text-center mt-4">
           <button
             type="button"
-            onClick={signInWithGoogle}
+            onClick={handleGoogleSignIn}
             className="bg-red-500 text-white px-4 py-2 rounded w-full mt-2"
           >
             Login with Google
           </button>
           <button
             type="button"
-            onClick={signInWithGithub}
+            onClick={handleGithubSignIn}
             className="bg-gray-800 text-white px-4 py-2 rounded w-full mt-2"
           >
             Login with GitHub

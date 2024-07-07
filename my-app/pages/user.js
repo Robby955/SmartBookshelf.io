@@ -127,7 +127,7 @@ const UserPage = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Books</h1>
-      {user && <p>Total Uploads: {totalUploads}</p>}
+      {user && <p>Total Books: {totalUploads}</p>}
       {error && <p className="text-red-500">{error}</p>}
       <div className="mb-4">
         <input

@@ -1,29 +1,15 @@
 import React from 'react';
-import Head from 'next/head';
 
 const FAQ = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex flex-col items-center py-12">
-      <Head>
-        <title>FAQ - SmartBookshelf.io</title>
-        <meta name="description" content="Frequently Asked Questions about SmartBookshelf.io" />
-      </Head>
-
-      <div className="container mx-auto p-6 bg-dark rounded-lg shadow-lg flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-white mb-6">Frequently Asked Questions</h1>
-        <div className="w-full">
-          <h2 className="text-2xl font-semibold mb-4 text-white">What is SmartBookshelf.io?</h2>
-          <p className="mb-6 text-white">SmartBookshelf.io is a web application that allows you to upload images of your bookshelf and extract text from the book spines using OCR (Optical Character Recognition) technology.</p>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white">How do I use SmartBookshelf.io?</h2>
-          <p className="mb-6 text-white">Simply upload an image of your bookshelf, and our application will detect the books and extract the titles for you. An algorithm is in development that will automatically detect the books and extract additional information for you.</p>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white">What technologies are used in SmartBookshelf.io?</h2>
-          <p className="mb-6 text-white">SmartBookshelf.io uses modern web technologies such as React, Next.js, Tailwind CSS, and DaisyUI for the front end. The backend is powered by Python, Flask, and various OCR libraries.</p>
-
-
-        </div>
-      </div>
+    <div className="container mx-auto p-6">
+      <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+      <h2 className="text-2xl font-semibold mb-2">How do I take a good photo?</h2>
+      <p>Ensure your photo is well-lit, in focus, and that book titles are clearly visible. It is best to separate books of the same size or color as they may blend into one otherwise.</p>
+      <h2 className="text-2xl font-semibold mb-2">Why can&#39;t I upload large photos?</h2>
+      <p>Our system is currently in development and may not handle very large images well. Try taking multiple smaller photos for better results. Make sure there are not other items in the photo.</p>
+      <h2 className="text-2xl font-semibold mb-2">What should I do if the app doesn&#39;t detect all books correctly?</h2>
+      <p>You can manually adjust any incorrect book titles after the analysis. We are working on improving the accuracy of our system.</p>
     </div>
   );
 };
