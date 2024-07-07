@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
-import { logout } from '../firebase';
+import { signInWithGoogle, signInWithGithub, logout } from '../firebase';
 
 const Header = () => {
   const { user } = useAuth();
@@ -35,17 +35,9 @@ const Header = () => {
               </button>
             </>
           ) : (
-<<<<<<< HEAD
-            <>
-              <Link href="/auth" legacyBehavior>
-                <a className="text-white">Login</a>
-              </Link>
-            </>
-=======
             <Link href="/auth" legacyBehavior>
               <a className="text-white">Login</a>
             </Link>
->>>>>>> 9fd3a29 (debug and improve auth)
           )}
         </nav>
       </div>

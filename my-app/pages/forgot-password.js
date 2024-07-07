@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-=======
 import Link from 'next/link';
->>>>>>> 9fd3a29 (debug and improve auth)
 import { resetPassword } from '../firebase';
 
 const ForgotPassword = () => {
@@ -41,13 +38,9 @@ const ForgotPassword = () => {
           {loading ? 'Sending...' : 'Send Reset Email'}
         </button>
         <div className="text-center mt-4">
-<<<<<<< HEAD
-          <a href="/login" className="text-blue-500">Back to Login</a>
-=======
           <Link href="/auth" passHref>
             <a className="text-blue-500">Back to Login</a>
           </Link>
->>>>>>> 9fd3a29 (debug and improve auth)
         </div>
       </form>
     </div>
