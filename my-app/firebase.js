@@ -10,7 +10,10 @@ import {
   fetchSignInMethodsForEmail,
   sendEmailVerification,
   sendPasswordResetEmail,
+<<<<<<< HEAD
   onAuthStateChanged
+=======
+>>>>>>> 9fd3a29 (debug and improve auth)
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -21,7 +24,7 @@ const firebaseConfig = {
   storageBucket: "smartbookshelf-6c6c4.appspot.com",
   messagingSenderId: "795958126743",
   appId: "1:795958126743:web:your-app-id",
-  measurementId: "G-measurement-id"
+  measurementId: "G-measurement-id",
 };
 
 // Initialize Firebase
@@ -118,5 +121,9 @@ export {
   signInWithEmail,
   signUpWithEmail,
   resetPassword,
+<<<<<<< HEAD
   logout
+=======
+  logout,
+>>>>>>> 9fd3a29 (debug and improve auth)
 };

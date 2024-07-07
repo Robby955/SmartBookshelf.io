@@ -64,40 +64,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ACTIVE_CLOUD_PROJECT_ACCOUNT": "robbysneiderman@gmail.com",
-    "ACTIVE_CLOUD_PROJECT_ID": "smartdogbreed-416219",
-    "ACTIVE_CLOUD_PROJECT_NAME": "smartDogBreed",
-    "ACTIVE_CLOUD_PROJECT_NUMBER": "668071408107",
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "JavaScript Debug.upload_test.html.executor": "Run",
-    "Python.app.executor": "Run",
-    "Python.book_bounds.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.open_library_api.executor": "Run",
-    "Python.test_api.executor": "Run",
-    "Python.test_book_search.executor": "Run",
-    "Python.test_image_load.executor": "Run",
-    "Python.test_laod.executor": "Run",
-    "Python.test_mongodb_connection.executor": "Run",
-    "Python.test_vision_api.executor": "Run",
-    "Python.without_crop.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.google.cloudcode.ide_session_index": "20240703_0001",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/robby/PycharmProjects/SmartShelf/backend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.general",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PyCharm 2023.3.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ACTIVE_CLOUD_PROJECT_ACCOUNT&quot;: &quot;robbysneiderman@gmail.com&quot;,
+    &quot;ACTIVE_CLOUD_PROJECT_ID&quot;: &quot;smartdogbreed-416219&quot;,
+    &quot;ACTIVE_CLOUD_PROJECT_NAME&quot;: &quot;smartDogBreed&quot;,
+    &quot;ACTIVE_CLOUD_PROJECT_NUMBER&quot;: &quot;668071408107&quot;,
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;JavaScript Debug.upload_test.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.book_bounds.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.open_library_api.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_api.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_book_search.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_image_load.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_laod.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_mongodb_connection.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_vision_api.executor&quot;: &quot;Run&quot;,
+    &quot;Python.without_crop.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.google.cloudcode.ide_session_index&quot;: &quot;20240703_0001&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/robby/PycharmProjects/SmartShelf/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PyCharm 2023.3.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\robby\PycharmProjects\SmartShelf\backend" />

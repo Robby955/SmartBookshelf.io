@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useState } from 'react'; // Remove Link import
+>>>>>>> 9fd3a29 (debug and improve auth)
 import { signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithGithub, resetPassword } from '../firebase';
 
 const Auth = () => {
