@@ -30,3 +30,32 @@ gcloud run deploy smartbookshelf-backend --image gcr.io/smartshelf-426516/smartb
 To Add:
 
 Multi batch processing, able to do higher resolution images with more than just a few books.
+
+
+Given the variability and potential inconsistencies in spine data, a combination of several methods would likely provide the best results for matching extracted book information with actual books. Here's a more detailed approach incorporating multiple techniques to handle different patterns and inconsistencies:
+
+Step-by-Step Approach
+Preprocess Extracted Text:
+
+Clean and standardize the extracted text (e.g., removing special characters, normalizing case).
+Extract potential metadata fields (e.g., title, author, publisher) using NLP techniques or regular expressions.
+Initial Candidate Retrieval:
+
+Use an API like Google Books or Open Library to retrieve a broad set of candidate books based on the cleaned and extracted text.
+Combine multiple queries if necessary, focusing on different parts of the extracted text (e.g., title and author separately).
+Text Similarity Matching:
+
+Apply fuzzy string matching to compare the extracted text with the metadata of candidate books.
+Use libraries like fuzzywuzzy or rapidfuzz for this purpose.
+Semantic Similarity Matching:
+
+Convert the extracted text and candidate book metadata into embeddings using pre-trained models like BERT or Sentence-BERT.
+Calculate cosine similarity between the embeddings to find the closest matches.
+Weighted Scoring System:
+
+Develop a scoring system that combines the results of fuzzy matching, semantic similarity, and any additional heuristics (e.g., exact matches on parts of the text, frequency of terms).
+Weight the different components based on their importance and reliability.
+User Feedback Loop:
+
+Present the top matches to the user and allow them to select the correct book or indicate that none of the matches are correct.
+Use this feedback to improve the matching algorithm over time, potentially incorporating machine learning to adjust weights and heuristics.

@@ -45,7 +45,12 @@ def resize_image(image, max_width=400, max_height=600):
 def upload_book():
     try:
         file = request.files["file"]
-        user_id = request.form.get('userID')  # Ensure userID is passed from frontend
+        user_id = request.form.get('userID')
+        logger.debug(f"Received file: {file.filename if file else 'No file'}, userID: {user_id}")
+
+        if not file:
+            raise ValueError("No file uploaded")
+
         contents = file.read()
         logger.debug("File contents read successfully")
 
@@ -99,20 +104,33 @@ def upload_book():
                     })
                     logger.debug(f"Extracted text: {text}")
 
-                    # Save to Firestore
-                    doc_ref = db.collection('uploads').document()
-                    doc_ref.set({
-                        'imageURL': book_img_url,
-                        'text': text,
-                        'userId': user_id
-                    })
-                    logger.debug(f"Saved to Firestore: {text}")
+                    if user_id:
+                        # Save to Firestore
+                        doc_ref = db.collection('uploads').document()
+                        doc_ref.set({
+                            'imageURL': book_img_url,
+                            'text': text,
+                            'userId': user_id
+                        })
+                        logger.debug(f"Saved to Firestore: {text}")
 
-        # Update total uploads in the user's document
-        user_doc_ref = db.collection('users').document(user_id)
-        user_doc_ref.update({
-            'total_uploads': firestore.Increment(len(extracted_texts))
-        })
+        if user_id:
+            # Update total uploads in the user's document
+            try:
+                user_doc_ref = db.collection('users').document(user_id)
+                user_doc = user_doc_ref.get()
+
+                if user_doc.exists:
+                    user_doc_ref.update({
+                        'total_uploads': firestore.Increment(len(extracted_texts))
+                    })
+                else:
+                    user_doc_ref.set({
+                        'total_uploads': len(extracted_texts)
+                    })
+                logger.debug(f"Updated Firestore for user: {user_id}")
+            except Exception as e:
+                logger.warning(f"Failed to update Firestore for user {user_id}: {e}")
 
         logger.debug(f"Extracted texts: {extracted_texts}")
 
