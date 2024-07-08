@@ -218,7 +218,7 @@ def detect_books(image_path, save_path='detected_books.jpg'):
     return extracted_texts
 
 # Test the function
-extracted_texts = detect_books('IMG_6348.jpg')
+extracted_texts = detect_books('IMG_6404.jpg')
 
 for text in extracted_texts:
     test_extraction_and_search(text)

@@ -59,3 +59,19 @@ User Feedback Loop:
 
 Present the top matches to the user and allow them to select the correct book or indicate that none of the matches are correct.
 Use this feedback to improve the matching algorithm over time, potentially incorporating machine learning to adjust weights and heuristics.
+
+
+To Do:
+
+Book Brown theme front end to style the pages
+More examples and descriptions on the example page
+fixed the cropped image being a diffirent color
+scroll to search on user page
+readd delete all books page
+add a delete account button
+Allow batch uploads
+stripe integration
+login with facebook/meta/apple/other
+allow feedback on upload i.e if user thinks it is wrong amount of books
+add shelves and themes onuser page
+fix login/register page theme/background

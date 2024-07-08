@@ -10,6 +10,8 @@ import cv2
 import numpy as np
 import firebase_admin
 from firebase_admin import credentials, firestore
+from datetime import datetime
+from PIL import Image
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("credentials.json")
@@ -41,18 +43,18 @@ def resize_image(image, max_width=400, max_height=600):
     new_size = (int(w * scaling_factor), int(h * scaling_factor))
     return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
 
+def clean_text(text):
+    """Clean text by replacing newlines and multiple spaces with a single space."""
+    return ' '.join(text.split())  # Replace multiple spaces and newlines with a single space
+
 @app.route("/upload/", methods=["POST"])
 def upload_book():
     try:
-        file = request.files["file"]
-        user_id = request.form.get('userID')
-        logger.debug(f"Received file: {file.filename if file else 'No file'}, userID: {user_id}")
-
-        if not file:
-            raise ValueError("No file uploaded")
+        file = request.files.get("file")
+        user_id = request.form.get('userID')  # Ensure userID is passed from frontend
 
         contents = file.read()
-        logger.debug("File contents read successfully")
+        logger.debug(f"File contents read successfully, user_id: {user_id}")
 
         # Save uploaded image to Google Cloud Storage
         blob = bucket.blob(file.filename)
@@ -97,40 +99,40 @@ def upload_book():
                 texts = response.text_annotations
                 if texts:
                     text = texts[0].description
+                    cleaned_text = clean_text(text)
                     extracted_texts.append({
-                        "text": text,
+                        "text": cleaned_text,
                         "image_url": book_img_url,
                         "coordinates": {"x1": x1, "y1": y1, "x2": x2, "y2": y2}
                     })
-                    logger.debug(f"Extracted text: {text}")
+                    logger.debug(f"Extracted text: {cleaned_text}")
 
-                    if user_id:
-                        # Save to Firestore
-                        doc_ref = db.collection('uploads').document()
-                        doc_ref.set({
-                            'imageURL': book_img_url,
-                            'text': text,
-                            'userId': user_id
-                        })
-                        logger.debug(f"Saved to Firestore: {text}")
+                    # Save to Firestore
+                    doc_ref = db.collection('uploads').document()
+                    doc_ref.set({
+                        'imageURL': book_img_url,
+                        'text': cleaned_text,
+                        'userId': user_id
+                    })
+                    logger.debug(f"Saved to Firestore: {cleaned_text}")
+
+        # Calculate total books
+        total_books = len(extracted_texts)
+        logger.debug(f"Total books detected: {total_books}")
 
         if user_id:
-            # Update total uploads in the user's document
-            try:
-                user_doc_ref = db.collection('users').document(user_id)
-                user_doc = user_doc_ref.get()
-
-                if user_doc.exists:
-                    user_doc_ref.update({
-                        'total_uploads': firestore.Increment(len(extracted_texts))
-                    })
-                else:
-                    user_doc_ref.set({
-                        'total_uploads': len(extracted_texts)
-                    })
-                logger.debug(f"Updated Firestore for user: {user_id}")
-            except Exception as e:
-                logger.warning(f"Failed to update Firestore for user {user_id}: {e}")
+            user_doc_ref = db.collection('users').document(user_id)
+            user_doc = user_doc_ref.get()
+            if user_doc.exists:
+                current_total_books = user_doc.to_dict().get('total_books', 0)
+                new_total_books = current_total_books + total_books
+                user_doc_ref.update({
+                    'total_books': new_total_books
+                })
+                logger.debug(f"Updated user document for user_id: {user_id} with total_books: {new_total_books}")
+            else:
+                user_doc_ref.set({'total_books': total_books})
+                logger.debug(f"Created new user document for user_id: {user_id} with total_books: {total_books}")
 
         logger.debug(f"Extracted texts: {extracted_texts}")
 
@@ -158,10 +160,18 @@ def export_csv():
 
         for doc in docs:
             book = doc.to_dict()
-            writer.writerow([book['text'], book['imageURL']])
+            text = clean_text(book['text'])  # Clean the text
+            writer.writerow([text, book['imageURL']])
 
         output.seek(0)
-        return send_file(output, mimetype='text/csv', attachment_filename='books.csv', as_attachment=True)
+
+        # Save to file
+        with open('books.csv', 'w', newline='', encoding='utf-8') as csvfile:
+            csvfile.write(output.getvalue())
+
+        logger.debug("CSV exported successfully")
+
+        return send_file('books.csv', mimetype='text/csv', attachment_filename='books.csv', as_attachment=True)
     except Exception as e:
         logger.error("Error exporting CSV: %s", e)
         logger.error(traceback.format_exc())
