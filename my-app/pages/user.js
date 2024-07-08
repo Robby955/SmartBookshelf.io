@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
 import Link from 'next/link';
 import { CSVLink } from 'react-csv';
 
@@ -14,45 +14,42 @@ const UserPage = () => {
   const [newBookText, setNewBookText] = useState('');
   const [editingBook, setEditingBook] = useState(null);
 
-useEffect(() => {
-  const fetchBooks = async () => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      console.log(`Fetching user data for user: ${user.uid}`);
-      const userDocRef = doc(db, 'users', user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        console.log('User data:', userDoc.data());
-        // Set total books based on the actual number of books fetched
-        setTotalBooks(userDoc.data().total_books || 0);
-      } else {
-        console.log(`No user data found for user: ${user.uid}.`);
-        setTotalBooks(0); // If no user data, set total books to 0
+  useEffect(() => {
+    const fetchBooks = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
       }
 
-      const q = query(collection(db, 'uploads'), where('userId', '==', user.uid));
-      const querySnapshot = await getDocs(q);
-      const userBooks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log('Fetched books:', userBooks);
-      setBooks(userBooks);
+      try {
+        console.log(`Fetching user data for user: ${user.uid}`);
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
 
-      // Update the total books based on the fetched books length
-      setTotalBooks(userBooks.length);
-    } catch (err) {
-      console.error('Error fetching books:', err);
-      setError('Failed to fetch books. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (userDoc.exists()) {
+          console.log('User data:', userDoc.data());
+          setTotalBooks(userDoc.data().total_books || 0);
+        } else {
+          console.log(`No user data found for user: ${user.uid}.`);
+          setTotalBooks(0);
+        }
 
-  fetchBooks();
-}, [user]);
+        const q = query(collection(db, 'uploads'), where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        const userBooks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('Fetched books:', userBooks);
+        setBooks(userBooks);
+        setTotalBooks(userBooks.length);
+      } catch (err) {
+        console.error('Error fetching books:', err);
+        setError('Failed to fetch books. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, [user]);
 
   const handleDelete = async (id) => {
     if (!user) {
@@ -66,12 +63,38 @@ useEffect(() => {
 
       await deleteDoc(doc(db, 'uploads', id));
       setBooks(books.filter(book => book.id !== id));
-      const newTotalBooks = totalBooks - 1;  // Decrement total books
-      setTotalBooks(newTotalBooks);  // Update total books state
-      await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });  // Update Firestore
+      const newTotalBooks = totalBooks - 1;
+      setTotalBooks(newTotalBooks);
+      await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });
     } catch (err) {
       console.error('Error deleting book:', err);
       setError('Failed to delete book. Please try again later.');
+    }
+  };
+
+  const handleDeleteAllBooks = async () => {
+    if (!user) {
+      setError('User is not logged in.');
+      return;
+    }
+
+    try {
+      const q = query(collection(db, 'uploads'), where('userId', '==', user.uid));
+      const querySnapshot = await getDocs(q);
+      const batch = writeBatch(db);
+
+      querySnapshot.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+
+      setBooks([]);
+      setTotalBooks(0);
+      await updateDoc(doc(db, 'users', user.uid), { total_books: 0 });
+    } catch (err) {
+      console.error('Error deleting all books:', err);
+      setError('Failed to delete all books. Please try again later.');
     }
   };
 
@@ -89,9 +112,9 @@ useEffect(() => {
       };
       await setDoc(newBookRef, newBook);
       setBooks([...books, { id: newBookRef.id, ...newBook }]);
-      const newTotalBooks = totalBooks + 1;  // Increment total books
-      setTotalBooks(newTotalBooks);  // Update total books state
-      await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });  // Update Firestore
+      const newTotalBooks = totalBooks + 1;
+      setTotalBooks(newTotalBooks);
+      await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });
       setNewBookText('');
     } catch (err) {
       console.error('Error adding book:', err);
@@ -137,7 +160,7 @@ useEffect(() => {
       <h1 className="text-2xl font-bold mb-4">My Books</h1>
       {user && (
         <>
-          <p>Total Books: {totalBooks}</p> {/* Display total books */}
+          <p>Total Books: {totalBooks}</p>
         </>
       )}
       {error && <p className="text-red-500">{error}</p>}
@@ -157,6 +180,11 @@ useEffect(() => {
         ) : (
           <button onClick={handleAddBook} className="bg-blue-500 text-white px-4 py-2 rounded">
             Add Book
+          </button>
+        )}
+        {user && (
+          <button onClick={handleDeleteAllBooks} className="bg-red-500 text-white px-4 py-2 rounded mt-2">
+            Delete All Books
           </button>
         )}
       </div>
