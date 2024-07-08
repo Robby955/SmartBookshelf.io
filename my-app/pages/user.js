@@ -10,9 +10,10 @@ const UserPage = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [totalBooks, setTotalBooks] = useState(0);  // New state for total books
+  const [totalBooks, setTotalBooks] = useState(0);
   const [newBookText, setNewBookText] = useState('');
   const [editingBook, setEditingBook] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -146,6 +147,12 @@ const UserPage = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredBooks = books.filter((book) => book.text.toLowerCase().includes(searchQuery.toLowerCase()));
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -188,7 +195,17 @@ const UserPage = () => {
           </button>
         )}
       </div>
-      {books.length > 0 ? (
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search for a book..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="mb-2 p-2 border rounded w-full"
+          style={{ color: 'black' }}
+        />
+      </div>
+      {filteredBooks.length > 0 ? (
         <>
           {user && (
             <CSVLink
@@ -201,7 +218,7 @@ const UserPage = () => {
             </CSVLink>
           )}
           <ul>
-            {books.map((book) => (
+            {filteredBooks.map((book) => (
               <li key={book.id} className="mb-2 p-2 border rounded">
                 <p className="font-bold">{book.text}</p>
                 <p><a href={book.imageURL} target="_blank" rel="noopener noreferrer">View Image</a></p>
