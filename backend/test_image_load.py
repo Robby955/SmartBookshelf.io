@@ -11,11 +11,13 @@ from datetime import datetime
 # Set the Google Application Credentials environment variable
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'credentials.json'
 
-# Load the YOLOv5 model
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+# Load the YOLOv5 model, ensuring it uses the GPU if available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s').to(device)
 
 # Initialize Google Cloud Vision API client
 vision_client = vision.ImageAnnotatorClient()
+
 
 def non_max_suppression_fast(boxes, overlapThresh=0.3):
     if len(boxes) == 0:
@@ -52,7 +54,9 @@ def non_max_suppression_fast(boxes, overlapThresh=0.3):
 
     return boxes[pick].astype("int")
 
+
 def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, conf_thresh=0.3):
+    print(f"Processing image: {image_path}")
     img = cv2.imread(image_path)
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -62,13 +66,15 @@ def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, con
 
     # Filter results by confidence threshold
     filtered_results = [detection for detection in results_np if detection[4] >= conf_thresh]
-
-    print(f"Detection results: {filtered_results}")  # Debug print
+    print(f"Number of detections before NMS: {len(filtered_results)}")
+    print(f"Detections: {filtered_results}")
 
     # Apply Non-Maximum Suppression
-    boxes = np.array([[int(x1), int(y1), int(x2), int(y2)] for x1, y1, x2, y2, conf, cls, name in filtered_results if name == 'book'])
+    boxes = np.array([[int(x1), int(y1), int(x2), int(y2)] for x1, y1, x2, y2, conf, cls, name in filtered_results if
+                      name == 'book'])
     nms_boxes = non_max_suppression_fast(boxes, nms_thresh)
-    print(f"NMS results: {nms_boxes}")  # Debug print
+    print(f"Number of detections after NMS: {len(nms_boxes)}")
+    print(f"NMS Results: {nms_boxes}")
 
     cropped_dir = "cropped_books"
     if not os.path.exists(cropped_dir):
@@ -78,13 +84,12 @@ def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, con
     extracted_texts = []
 
     for (x1, y1, x2, y2) in nms_boxes:
-        # Filter detections for the 'book' class
-        filtered_detections = [detection for detection in filtered_results if detection[6] == 'book' and (int(detection[0]), int(detection[1]), int(detection[2]), int(detection[3])) == (x1, y1, x2, y2)]
+        filtered_detections = [detection for detection in filtered_results if detection[6] == 'book' and (
+        int(detection[0]), int(detection[1]), int(detection[2]), int(detection[3])) == (x1, y1, x2, y2)]
 
         if not filtered_detections:
             continue
 
-        # Take the first filtered detection
         detection = filtered_detections[0]
         confidence = detection[4]
 
@@ -131,7 +136,8 @@ def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, con
     for text in extracted_texts:
         x1, y1, x2, y2 = text['coordinates']
         cv2.rectangle(img_rgb, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-        cv2.putText(img_rgb, f"Book {text['confidence']:.2f}", (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        cv2.putText(img_rgb, f"Book {text['confidence']:.2f}", (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    (0, 255, 0), 2)
 
     img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
     cv2.imwrite(save_path, img_bgr)
@@ -152,10 +158,76 @@ def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, con
 
     return extracted_texts
 
-# Test the function
-extracted_texts = detect_books('IMG_6484.jpg', conf_thresh=0.1, nms_thresh=0.5)
 
-for text in extracted_texts:
-    print(f"Extracted Text:\n{text['text']}\n")
-    print(f"Image Path: {text['image_path']}\n")
-    print(f"Coordinates: {text['coordinates']}\n")
+def hyperparameter_search(images_info, conf_thresh_range, nms_thresh_range):
+    best_params = {}
+    best_diffs = {}
+
+    for image_name, expected_count in images_info.items():
+        best_diff = float('inf')
+        best_conf_thresh = None
+        best_nms_thresh = None
+
+        image_path = os.path.join("images", image_name)
+
+        for conf_thresh in conf_thresh_range:
+            for nms_thresh in nms_thresh_range:
+                print(f"\nTesting parameters: conf_thresh={conf_thresh}, nms_thresh={nms_thresh}")
+
+                try:
+                    extracted_texts = detect_books(image_path, conf_thresh=conf_thresh, nms_thresh=nms_thresh)
+                    detected_count = len(extracted_texts)
+                    diff = abs(detected_count - expected_count)
+
+                    if diff < best_diff:
+                        best_diff = diff
+                        best_conf_thresh = conf_thresh
+                        best_nms_thresh = nms_thresh
+
+                    print(f"Detected {detected_count} books, expected {expected_count}, difference: {diff}")
+
+                except Exception as e:
+                    print(f"Error processing {image_name} with conf_thresh={conf_thresh}, nms_thresh={nms_thresh}: {e}")
+
+        best_params[image_name] = {
+            'conf_thresh': best_conf_thresh,
+            'nms_thresh': best_nms_thresh,
+            'difference': best_diff
+        }
+        best_diffs[image_name] = best_diff
+
+        print(
+            f"Best parameters for image {image_name}: ConfThresh - {best_conf_thresh}, NMSThresh - {best_nms_thresh}, Difference - {best_diff}")
+
+    return best_params, best_diffs
+
+
+# Define the images and their expected book counts
+images_info = {
+    'IMG_6484.jpg': 27,
+    'IMG_6400.jpg': 9,
+    'IMG_6335.jpg': 5,
+    'IMG_6404.jpeg': 4,
+    'IMG_6496.jpeg': 7,
+    'IMG_6497.jpeg': 24,
+    'IMG_6321.jpeg': 14,
+    'IMG_6495.jpeg': 9,
+    'IMG_6498.jpeg': 33,
+    'IMG_6499.jpeg': 51,
+    'IMG_6512.jpeg':7,
+    'IMG_6507.jpeg':13,
+    'IMG_6511.jpeg':5,
+    'IMG_6510:jpeg':10
+
+}
+
+# Define the range for hyperparameters
+conf_thresh_range = np.arange(0.1, 0.9, 0.05)
+nms_thresh_range = np.arange(0.1, 0.9, 0.05)
+
+# Perform the hyperparameter search
+best_params, best_diffs = hyperparameter_search(images_info, conf_thresh_range, nms_thresh_range)
+
+# Output the best parameters for each image
+for image_name, params in best_params.items():
+    print(f"Best parameters for {image_name}: {params}")

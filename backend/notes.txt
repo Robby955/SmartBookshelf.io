@@ -63,11 +63,11 @@ Use this feedback to improve the matching algorithm over time, potentially incor
 
 To Do:
 
-Book Brown theme front end to style the pages
-More examples and descriptions on the example page
+Book Brown theme front end to style the pages x
+More examples and descriptions on the example page x
 fixed the cropped image being a diffirent color
-scroll to search on user page
-readd delete all books page
+scroll to search on user page x
+delete all books on user page x
 add a delete account button
 Allow batch uploads
 stripe integration
@@ -75,3 +75,14 @@ login with facebook/meta/apple/other
 allow feedback on upload i.e if user thinks it is wrong amount of books
 add shelves and themes onuser page
 fix login/register page theme/background
+remove url column from export to csv, also add option to export to .txt instead
+
+overall goals; improve model accuracy and ability to do large images/books and implement the matching algorithm
+
+
+2024/07/10
+docker build -t gcr.io/smartshelf-426516/smartbookshelf-backend-v1.8 .
+docker push gcr.io/smartshelf-426516/smartbookshelf-backend-v1.8
+gcloud run deploy smartbookshelf-backend --image gcr.io/smartshelf-426516/smartbookshelf-backend-v1.8 --platform managed --region northamerica-northeast1 --allow-unauthenticated --memory 4Gi --cpu 2 --min-instances 1
+
+To start the server; (.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> waitress-serve --host=0.0.0.0 --port=8080 app:app
