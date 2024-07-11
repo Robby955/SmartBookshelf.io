@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
 import Link from 'next/link';
 import { CSVLink } from 'react-csv';
+import { FaPlus, FaTrash, FaEdit } from 'react-icons/fa';
 
 const UserPage = () => {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ const UserPage = () => {
   const [newBookText, setNewBookText] = useState('');
   const [editingBook, setEditingBook] = useState(null);
   const [searchQuery, setSearchQuery] = useState(''); // New state for search query
+  const [isAddingBook, setIsAddingBook] = useState(false); // State to show/hide the add book input
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -117,6 +119,7 @@ const UserPage = () => {
       setTotalBooks(newTotalBooks);
       await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });
       setNewBookText('');
+      setIsAddingBook(false); // Hide the input after adding the book
     } catch (err) {
       console.error('Error adding book:', err);
       setError('Failed to add book. Please try again later.');
@@ -164,37 +167,52 @@ const UserPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">My Books</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">My Books</h1>
       {user && (
         <>
-          <p>Total Books: {totalBooks}</p>
+          <p className="text-white">Total Books: {totalBooks}</p>
         </>
       )}
       {error && <p className="text-red-500">{error}</p>}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Book Text"
-          value={newBookText}
-          onChange={(e) => setNewBookText(e.target.value)}
-          className="mb-2 p-2 border rounded"
-          style={{ color: 'black' }}
-        />
-        {editingBook ? (
-          <button onClick={handleUpdateBook} className="bg-green-500 text-white px-4 py-2 rounded">
-            Update Book
-          </button>
-        ) : (
-          <button onClick={handleAddBook} className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add Book
-          </button>
-        )}
+      <div className="flex items-center mb-4">
+        <button
+          onClick={() => setIsAddingBook(!isAddingBook)}
+          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2"
+        >
+          <FaPlus className="mr-2" />
+          Add Book
+        </button>
         {user && (
-          <button onClick={handleDeleteAllBooks} className="bg-red-500 text-white px-4 py-2 rounded mt-2">
+          <button
+            onClick={handleDeleteAllBooks}
+            className="flex items-center bg-red-500 text-white px-4 py-2 rounded"
+          >
+            <FaTrash className="mr-2" />
             Delete All Books
           </button>
         )}
       </div>
+      {isAddingBook && (
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Book Text"
+            value={newBookText}
+            onChange={(e) => setNewBookText(e.target.value)}
+            className="mb-2 p-2 border rounded w-full"
+            style={{ color: 'black' }}
+          />
+          {editingBook ? (
+            <button onClick={handleUpdateBook} className="bg-green-500 text-white px-4 py-2 rounded">
+              Update Book
+            </button>
+          ) : (
+            <button onClick={handleAddBook} className="bg-blue-500 text-white px-4 py-2 rounded">
+              Add Book
+            </button>
+          )}
+        </div>
+      )}
       <div className="mb-4">
         <input
           type="text"
@@ -219,35 +237,35 @@ const UserPage = () => {
           )}
           <ul>
             {filteredBooks.map((book) => (
-              <li key={book.id} className="mb-2 p-2 border rounded">
-                <p className="font-bold">{book.text}</p>
-                <p><a href={book.imageURL} target="_blank" rel="noopener noreferrer">View Image</a></p>
-                {user && (
-                  <>
-                    <button
-                      onClick={() => handleEditBook(book)}
-                      className="bg-yellow-500 text-white px-4 py-2 rounded mt-2 mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book.id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded mt-2"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
+              <li key={book.id} className="mb-2 p-4 border rounded bg-white flex justify-between items-center" style={{ minWidth: '350px' }}>
+                <div>
+                  <p className="font-bold text-black">{book.text}</p>
+                  <p><a href={book.imageURL} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Image</a></p>
+                </div>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => handleEditBook(book)}
+                    className="bg-yellow-500 text-white p-2 rounded-full mr-2"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(book.id)}
+                    className="bg-red-500 text-white p-2 rounded-full"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         </>
       ) : (
-        <p>No books found.</p>
+        <p className="text-black">No books found.</p>
       )}
       {!user && (
         <div className="container mx-auto p-4">
-          <p className="text-xl">Please <Link href="/login"><a className="text-blue-500 underline">log in</a></Link> to see your books.</p>
+          <p className="text-xl text-black">Please <Link href="/login"><a className="text-blue-500 underline">log in</a></Link> to see your books.</p>
         </div>
       )}
     </div>

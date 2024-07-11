@@ -23,7 +23,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-500 to-purple-600 p-4">
+    <header className="p-4" style={{ backgroundImage: "url('/background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center" }}>
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="SmartBookshelf Logo" width={32} height={32} />
@@ -66,7 +66,7 @@ const Header = () => {
               <Link href="/user" legacyBehavior>
                 <a className="text-white">My Books</a>
               </Link>
-              <button onClick={logout} className="bg-purple-500 text-white px-4 py-2 rounded">
+              <button onClick={logout} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
                 Logout
               </button>
             </>

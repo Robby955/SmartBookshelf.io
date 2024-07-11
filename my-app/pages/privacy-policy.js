@@ -3,13 +3,13 @@ import Head from 'next/head';
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex flex-col items-center py-12">
+    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('/background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
       <Head>
         <title>Privacy Policy - SmartBookshelf.io</title>
         <meta name="description" content="Privacy Policy for SmartBookshelf.io" />
       </Head>
 
-      <div className="container mx-auto p-6 bg-dark rounded-lg shadow-lg flex flex-col items-center">
+      <div className="container mx-auto p-6 bg-gray-100 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center mt-12">
         <h1 className="text-4xl font-bold text-white mb-6">Privacy Policy</h1>
         <div className="w-full text-white">
           <p className="mb-4">
