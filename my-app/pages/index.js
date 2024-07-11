@@ -27,8 +27,8 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 export default function Home() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadedImage, setUploadedImage] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [extractedTexts, setExtractedTexts] = useState([]);
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
@@ -48,8 +48,8 @@ export default function Home() {
     });
 
     // Clear state on component mount (i.e., on refresh)
-    setSelectedFile(null);
-    setUploadedImage(null);
+    setSelectedFiles([]);
+    setUploadedImages([]);
     setExtractedTexts([]);
     setError('');
     setBookCount(null);
@@ -58,82 +58,95 @@ export default function Home() {
   }, []);
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setUploadedImage(URL.createObjectURL(event.target.files[0]));
+    const files = Array.from(event.target.files);
+    setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+    setUploadedImages(prevImages => [...prevImages, ...files.map(file => URL.createObjectURL(file))]);
     setError(''); // Clear any previous error
+    console.log("Files selected:", files);
   };
 
- const handleUpload = async () => {
-  if (!selectedFile) {
-    setError('Please upload a photo first');
-    return;
-  }
+  const handleRemoveImage = (index) => {
+    const newFiles = [...selectedFiles];
+    const newImages = [...uploadedImages];
+    newFiles.splice(index, 1);
+    newImages.splice(index, 1);
+    setSelectedFiles(newFiles);
+    setUploadedImages(newImages);
+  };
 
-  setIsAnalyzing(true); // Show analyzing message
+  const handleUpload = async () => {
+    if (selectedFiles.length === 0) {
+      setError('Please upload at least one photo first');
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append('file', selectedFile);
+    setIsAnalyzing(true); // Show analyzing message
 
-  // Only append userID if user is logged in
-  if (user) {
-    formData.append('userID', user.uid);
-  }
-
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log('Backend URL:', backendUrl); // Debugging line
-
-  try {
-    const response = await fetch(`${backendUrl}/upload/`, {
-      method: 'POST',
-      body: formData,
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append('files', file);
     });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
+    // Only append userID if user is logged in
+    if (user) {
+      formData.append('userID', user.uid);
     }
 
-    const result = await response.json();
-    console.log('Backend response:', result);
-    if (result.extracted_texts) {
-      const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
-      setExtractedTexts(sortedBooks);
-      setBookCount(sortedBooks.length);
-      setBookInfo(null);
-      bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    console.log('Backend URL:', backendUrl); // Debugging line
 
-      // Only update Firestore if the user is logged in
-      if (user) {
-        // Update Firestore with new books and increment total uploads using a transaction
-        await runTransaction(db, async (transaction) => {
-          const userDocRef = doc(db, 'users', user.uid);
+    try {
+      const response = await fetch(`${backendUrl}/upload/`, {
+        method: 'POST',
+        body: formData,
+      });
 
-          // Get the current total_uploads value
-          const userDoc = await transaction.get(userDocRef);
-          const newTotalUploads = (userDoc.data().total_uploads || 0) + sortedBooks.length;
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
 
-          sortedBooks.forEach((book) => {
-            const newBookRef = doc(collection(db, 'uploads'));
-            transaction.set(newBookRef, { ...book, userId: user.uid });
+      const result = await response.json();
+      console.log('Backend response:', result);
+      if (result.extracted_texts) {
+        const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
+        setExtractedTexts(sortedBooks);
+        setBookCount(sortedBooks.length);
+        setBookInfo(null);
+        bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
+
+        // Only update Firestore if the user is logged in
+        if (user) {
+          // Update Firestore with new books and increment total uploads using a transaction
+          await runTransaction(db, async (transaction) => {
+            const userDocRef = doc(db, 'users', user.uid);
+
+            // Get the current total_uploads value
+            const userDoc = await transaction.get(userDocRef);
+            const newTotalUploads = (userDoc.data().total_uploads || 0) + sortedBooks.length;
+
+            sortedBooks.forEach((book) => {
+              const newBookRef = doc(collection(db, 'uploads'));
+              transaction.set(newBookRef, { ...book, userId: user.uid });
+            });
+
+            transaction.update(userDocRef, { total_uploads: newTotalUploads });
           });
 
-          transaction.update(userDocRef, { total_uploads: newTotalUploads });
-        });
-
-        console.log('Firestore updated successfully');
+          console.log('Firestore updated successfully');
+        }
+      } else {
+        console.error('No extracted texts found in the response:', result);
+        setError('No extracted texts found.');
+        setBookCount(null);
       }
-    } else {
-      console.error('No extracted texts found in the response:', result);
-      setError('No extracted texts found.');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setError('Error uploading file, please try again.');
       setBookCount(null);
+    } finally {
+      setIsAnalyzing(false); // Hide analyzing message
     }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    setError('Error uploading file, please try again.');
-    setBookCount(null);
-  } finally {
-    setIsAnalyzing(false); // Hide analyzing message
-  }
-};
+  };
 
   const handleBookSelect = async (event) => {
     const selectedText = event.target.value;
@@ -171,8 +184,8 @@ export default function Home() {
           <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
           <ol className="list-decimal list-inside text-left text-lg">
             <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
-            <li className="mb-2">Select a photo of your bookshelf or take a new one.</li>
-            <li className="mb-2">Click &quot;Upload&quot; to analyze the image and extract book titles.</li>
+            <li className="mb-2">Select one or more photos of your bookshelf or take new ones.</li>
+            <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract book titles.</li>
           </ol>
         </div>
 
@@ -180,9 +193,15 @@ export default function Home() {
           <input
             type="file"
             accept="image/*"
+            multiple
             onChange={handleFileChange}
             className="mb-4 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
           />
+          {selectedFiles.length > 0 && (
+            <div className="text-center text-lg text-white mb-4">
+              <p>Selected files: {selectedFiles.length}</p>
+            </div>
+          )}
           {bookCount !== null && bookCount > 0 && (
             <div className="w-full text-center text-xl font-bold white mb-4">
               # of Books Detected: {bookCount}
@@ -207,11 +226,18 @@ export default function Home() {
               </select>
             </div>
           )}
-          {uploadedImage && (
-            <div className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
-              <Image src={uploadedImage} alt="Uploaded" layout="fill" objectFit="contain" />
+          {uploadedImages.map((image, index) => (
+            <div key={index} className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
+              <Image src={image} alt={`Uploaded ${index + 1}`} layout="fill" objectFit="contain" />
+              <button
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
+                style={{ width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center', fontSize: '14px' }}
+              >
+                X
+              </button>
             </div>
-          )}
+          ))}
           <button
             onClick={handleUpload}
             className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
