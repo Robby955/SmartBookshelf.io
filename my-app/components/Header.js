@@ -28,10 +28,10 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="SmartBookshelf Logo" width={32} height={32} />
           <Link href="/" legacyBehavior>
-            <a className="text-white text-xl font-bold">SmartBookshelf</a>
+            <a className="text-white text-lg font-bold">SmartBookshelf</a>
           </Link>
         </div>
-        <nav className="space-x-4 flex items-center">
+        <nav className="space-x-2 flex items-center text-sm">
           <Link href="/" legacyBehavior>
             <a className="text-white">Home</a>
           </Link>
@@ -45,7 +45,8 @@ const Header = () => {
             </span>
             {isDropdownOpen && (
               <div
-                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20"
+                className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-20"
+                style={{ left: '50%', transform: 'translateX(-50%)', top: '100%' }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -61,18 +62,25 @@ const Header = () => {
           <Link href="/examples" legacyBehavior>
             <a className="text-white">Examples</a>
           </Link>
+          <Link href="/essay-writer" legacyBehavior>
+            <a className="text-white">Essay Writer (Pro)</a>
+          </Link>
           {user ? (
             <>
               <Link href="/user" legacyBehavior>
                 <a className="text-white">My Books</a>
               </Link>
-              <button onClick={logout} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
+              <button
+                onClick={logout}
+                className="bg-blue-500 hover:bg-blue-700 text-white rounded"
+                style={{ padding: '2px 4px', fontSize: '12px', width: 'auto', height: 'auto' }}
+              >
                 Logout
               </button>
             </>
           ) : (
             <Link href="/auth" legacyBehavior>
-              <a className="text-white">Login</a>
+              <a className="btn btn-primary text-white text-sm">Login</a>
             </Link>
           )}
         </nav>

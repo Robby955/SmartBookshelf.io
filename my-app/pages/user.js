@@ -4,7 +4,6 @@ import { db } from '../firebase';
 import { collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
 import Link from 'next/link';
 import { CSVLink } from 'react-csv';
-import { FaPlus, FaTrash, FaEdit } from 'react-icons/fa';
 
 const UserPage = () => {
   const { user } = useAuth();
@@ -14,8 +13,10 @@ const UserPage = () => {
   const [totalBooks, setTotalBooks] = useState(0);
   const [newBookText, setNewBookText] = useState('');
   const [editingBook, setEditingBook] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
-  const [isAddingBook, setIsAddingBook] = useState(false); // State to show/hide the add book input
+  const [searchQuery, setSearchQuery] = useState('');
+  const [analysisResult, setAnalysisResult] = useState('');
+  const [isAddingBook, setIsAddingBook] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -25,26 +26,21 @@ const UserPage = () => {
       }
 
       try {
-        console.log(`Fetching user data for user: ${user.uid}`);
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          console.log('User data:', userDoc.data());
           setTotalBooks(userDoc.data().total_books || 0);
         } else {
-          console.log(`No user data found for user: ${user.uid}.`);
           setTotalBooks(0);
         }
 
         const q = query(collection(db, 'uploads'), where('userId', '==', user.uid));
         const querySnapshot = await getDocs(q);
         const userBooks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log('Fetched books:', userBooks);
         setBooks(userBooks);
         setTotalBooks(userBooks.length);
       } catch (err) {
-        console.error('Error fetching books:', err);
         setError('Failed to fetch books. Please try again later.');
       } finally {
         setLoading(false);
@@ -61,16 +57,12 @@ const UserPage = () => {
     }
 
     try {
-      const bookToDelete = books.find(book => book.id === id);
-      if (!bookToDelete) return;
-
       await deleteDoc(doc(db, 'uploads', id));
       setBooks(books.filter(book => book.id !== id));
       const newTotalBooks = totalBooks - 1;
       setTotalBooks(newTotalBooks);
       await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });
     } catch (err) {
-      console.error('Error deleting book:', err);
       setError('Failed to delete book. Please try again later.');
     }
   };
@@ -96,7 +88,6 @@ const UserPage = () => {
       setTotalBooks(0);
       await updateDoc(doc(db, 'users', user.uid), { total_books: 0 });
     } catch (err) {
-      console.error('Error deleting all books:', err);
       setError('Failed to delete all books. Please try again later.');
     }
   };
@@ -119,9 +110,8 @@ const UserPage = () => {
       setTotalBooks(newTotalBooks);
       await updateDoc(doc(db, 'users', user.uid), { total_books: newTotalBooks });
       setNewBookText('');
-      setIsAddingBook(false); // Hide the input after adding the book
+      setIsAddingBook(false);
     } catch (err) {
-      console.error('Error adding book:', err);
       setError('Failed to add book. Please try again later.');
     }
   };
@@ -129,6 +119,7 @@ const UserPage = () => {
   const handleEditBook = (book) => {
     setEditingBook(book);
     setNewBookText(book.text);
+    setIsAddingBook(true);
   };
 
   const handleUpdateBook = async () => {
@@ -144,14 +135,38 @@ const UserPage = () => {
       setBooks(books.map(book => (book.id === editingBook.id ? { ...book, text: newBookText } : book)));
       setEditingBook(null);
       setNewBookText('');
+      setIsAddingBook(false);
     } catch (err) {
-      console.error('Error updating book:', err);
       setError('Failed to update book. Please try again later.');
     }
   };
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleAnalyzeBooks = async () => {
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ books }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze books');
+      }
+
+      const data = await response.json();
+      setAnalysisResult(data.analysis);
+    } catch (error) {
+      setError('Failed to analyze books. Please try again later.');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const filteredBooks = books.filter((book) => book.text.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -167,31 +182,99 @@ const UserPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-white">My Books</h1>
-      {user && (
-        <>
-          <p className="text-white">Total Books: {totalBooks}</p>
-        </>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
-      <div className="flex items-center mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-white">My Books</h1>
+        <input
+          type="text"
+          placeholder="Search for a book..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="input input-bordered w-full max-w-xs"
+          style={{ color: 'black' }}
+        />
+      </div>
+      <div className="flex justify-between mb-4 space-x-4">
         <button
-          onClick={() => setIsAddingBook(!isAddingBook)}
-          className="flex items-center bg-blue-500 text-white px-4 py-2 rounded mr-2"
+          onClick={() => setIsAddingBook(true)}
+          className="btn btn-primary"
+          style={{
+            paddingTop: '5px',
+            paddingRight: '10px',
+            paddingBottom: '5px',
+            paddingLeft: '10px',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            display: 'block',
+            width: '80px',
+            height: '30px',
+          }}
         >
-          <FaPlus className="mr-2" />
           Add Book
         </button>
-        {user && (
-          <button
-            onClick={handleDeleteAllBooks}
-            className="flex items-center bg-red-500 text-white px-4 py-2 rounded"
-          >
-            <FaTrash className="mr-2" />
-            Delete All Books
-          </button>
-        )}
+        <CSVLink
+          data={books}
+          headers={headers}
+          filename={`books-${user.uid}.csv`}
+          className="btn btn-success"
+          style={{
+            paddingTop: '5px',
+            paddingRight: '10px',
+            paddingBottom: '5px',
+            paddingLeft: '10px',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            display: 'block',
+            width: '80px',
+            height: '30px',
+          }}
+        >
+          Export to CSV
+        </CSVLink>
+        <button
+          onClick={handleAnalyzeBooks}
+          className="btn btn-error"
+          style={{
+            paddingTop: '5px',
+            paddingRight: '10px',
+            paddingBottom: '5px',
+            paddingLeft: '10px',
+            borderRadius: '5px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            display: 'block',
+            width: '90px',
+            height: '30px',
+          }}
+        >
+          {isAnalyzing ? 'Analyzing...' : 'Analyze with AI'}
+        </button>
+        <button
+          onClick={handleDeleteAllBooks}
+          className="btn btn-danger"
+          style={{
+            paddingTop: '5px',
+            paddingRight: '10px',
+            paddingBottom: '5px',
+            paddingLeft: '10px',
+            borderRadius: '5px',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            display: 'block',
+            width: '80px',
+            height: '30px',
+          }}
+        >
+          Delete All Books
+        </button>
       </div>
+      {error && <p className="text-red-500">{error}</p>}  {/* Display the error message */}
+      <p className="text-white">Total Books: {totalBooks}</p>
       {isAddingBook && (
         <div className="mb-4">
           <input
@@ -199,61 +282,53 @@ const UserPage = () => {
             placeholder="Book Text"
             value={newBookText}
             onChange={(e) => setNewBookText(e.target.value)}
-            className="mb-2 p-2 border rounded w-full"
+            className="input input-bordered w-full max-w-xs"
             style={{ color: 'black' }}
           />
           {editingBook ? (
-            <button onClick={handleUpdateBook} className="bg-green-500 text-white px-4 py-2 rounded">
+            <button onClick={handleUpdateBook} className="btn btn-primary">
               Update Book
             </button>
           ) : (
-            <button onClick={handleAddBook} className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button onClick={handleAddBook} className="btn btn-primary">
               Add Book
             </button>
           )}
+          <button onClick={() => setIsAddingBook(false)} className="btn btn-secondary mt-2">
+            Cancel
+          </button>
         </div>
       )}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search for a book..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="mb-2 p-2 border rounded w-full"
-          style={{ color: 'black' }}
-        />
-      </div>
+      {analysisResult && (
+        <div className="mt-4 p-4 bg-white rounded shadow mb-4">
+          <h2 className="text-xl font-bold mb-2 text-black">Analysis Result</h2>
+          <p className="text-black">{analysisResult}</p>
+        </div>
+      )}
       {filteredBooks.length > 0 ? (
         <>
-          {user && (
-            <CSVLink
-              data={books}
-              headers={headers}
-              filename={`books-${user.uid}.csv`}
-              className="mb-4 inline-block bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Export to CSV
-            </CSVLink>
-          )}
           <ul>
             {filteredBooks.map((book) => (
-              <li key={book.id} className="mb-2 p-4 border rounded bg-white flex justify-between items-center" style={{ minWidth: '350px' }}>
+              <li key={book.id} className="mb-2 p-2 border rounded flex justify-between items-center">
                 <div>
-                  <p className="font-bold text-black">{book.text}</p>
-                  <p><a href={book.imageURL} target="_blank" rel="noopener noreferrer" className="text-blue-500">View Image</a></p>
+                  <p className="font-bold text-white">{book.text}</p>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleEditBook(book)}
-                    className="bg-yellow-500 text-white p-2 rounded-full mr-2"
+                    className="text-yellow-500"
                   >
-                    <FaEdit />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L8 19.5 3 21l1.5-5L16.732 5.232z" />
+                    </svg>
                   </button>
                   <button
                     onClick={() => handleDelete(book.id)}
-                    className="bg-red-500 text-white p-2 rounded-full"
+                    className="text-red-500"
                   >
-                    <FaTrash />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6" />
+                    </svg>
                   </button>
                 </div>
               </li>
@@ -261,11 +336,11 @@ const UserPage = () => {
           </ul>
         </>
       ) : (
-        <p className="text-black">No books found.</p>
+        <p className="text-white">No books found.</p>
       )}
       {!user && (
         <div className="container mx-auto p-4">
-          <p className="text-xl text-black">Please <Link href="/login"><a className="text-blue-500 underline">log in</a></Link> to see your books.</p>
+          <p className="text-xl">Please <Link href="/login"><a className="text-blue-500 underline">log in</a></Link> to see your books.</p>
         </div>
       )}
     </div>
