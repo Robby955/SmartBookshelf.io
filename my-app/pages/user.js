@@ -209,6 +209,7 @@ const UserPage = () => {
             display: 'block',
             width: '80px',
             height: '30px',
+            color: 'white' //
           }}
         >
           Add Book
@@ -224,12 +225,13 @@ const UserPage = () => {
             paddingBottom: '5px',
             paddingLeft: '10px',
             borderRadius: '5px',
-            fontSize: '16px',
+            fontSize: '14px',
             fontWeight: 'bold',
             textAlign: 'center',
             display: 'block',
             width: '80px',
             height: '30px',
+            color: 'white' //
           }}
         >
           Export to CSV
@@ -249,6 +251,7 @@ const UserPage = () => {
             display: 'block',
             width: '90px',
             height: '30px',
+            color: 'white' //
           }}
         >
           {isAnalyzing ? 'Analyzing...' : 'Analyze with AI'}
@@ -256,19 +259,20 @@ const UserPage = () => {
         <button
           onClick={handleDeleteAllBooks}
           className="btn btn-danger"
-          style={{
-            paddingTop: '5px',
-            paddingRight: '10px',
-            paddingBottom: '5px',
-            paddingLeft: '10px',
-            borderRadius: '5px',
-            fontSize: '13px',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            display: 'block',
-            width: '80px',
-            height: '30px',
-          }}
+style={{
+  paddingTop: '5px',
+  paddingRight: '10px',
+  paddingBottom: '5px',
+  paddingLeft: '10px',
+  borderRadius: '5px',
+  fontSize: '13px',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  display: 'block',
+  width: '80px',
+  height: '30px',
+  color: 'white' //
+}}
         >
           Delete All Books
         </button>

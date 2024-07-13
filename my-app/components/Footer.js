@@ -19,6 +19,9 @@ const Footer = () => {
           <Link href="/terms-of-service" legacyBehavior>
             <a className="text-white">Terms of Service</a>
           </Link>
+          <Link href="https://smartbreed.io" legacyBehavior>
+            <a className="text-white">Visit SmartBreed.io</a>
+          </Link>
         </div>
       </div>
     </footer>

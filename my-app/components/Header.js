@@ -35,41 +35,47 @@ const Header = () => {
           <Link href="/" legacyBehavior>
             <a className="text-white">Home</a>
           </Link>
-          <div
-            className="relative"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <span className="text-white cursor-pointer">
-              About
-            </span>
-            {isDropdownOpen && (
-              <div
-                className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-20"
-                style={{ left: '50%', transform: 'translateX(-50%)', top: '100%' }}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <Link href="/about" legacyBehavior>
-                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">About Us</a>
-                </Link>
-                <Link href="/faq" legacyBehavior>
-                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">FAQ</a>
-                </Link>
-              </div>
-            )}
-          </div>
-          <Link href="/examples" legacyBehavior>
-            <a className="text-white">Examples</a>
-          </Link>
-          <Link href="/essay-writer" legacyBehavior>
-            <a className="text-white">Essay Writer (Pro)</a>
+          <Link href="/about" legacyBehavior>
+            <a className="text-white">About</a>
           </Link>
           {user ? (
             <>
               <Link href="/user" legacyBehavior>
                 <a className="text-white">My Books</a>
               </Link>
+              <div
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <span className="text-white cursor-pointer">
+                  Features
+                </span>
+                {isDropdownOpen && (
+                  <div
+                    className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-20"
+                    style={{ left: '50%', transform: 'translateX(-50%)', top: '100%' }}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link href="/examples" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Examples</a>
+                    </Link>
+                    <Link href="/essay-writer" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Essay Writer</a>
+                    </Link>
+                    <Link href="/spell-checker" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Spell Checker</a>
+                    </Link>
+                    <Link href="/ai-detector" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">AI Detector</a>
+                    </Link>
+                    <Link href="/plagiarism-detector" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Plagiarism Detector</a>
+                    </Link>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={logout}
                 className="bg-blue-500 hover:bg-blue-700 text-white rounded"
