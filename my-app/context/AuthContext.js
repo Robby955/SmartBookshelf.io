@@ -1,16 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut
+} from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
-// Initialize Firebase
+// Initialize Firebase with environment variables for security
 const firebaseConfig = {
-  apiKey: "AIzaSyDuFLvTbB_f3ZkycBpTYMCdHsI-A3w86rU",
-  authDomain: "smartbookshelf-6c6c4.firebaseapp.com",
-  projectId: "smartbookshelf-6c6c4",
-  storageBucket: "smartbookshelf-6c6c4.appspot.com",
-  messagingSenderId: "795958126743",
-  appId: "1:795958126743:web:your-app-id",
-  measurementId: "G-measurement-id"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
@@ -21,37 +27,39 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Track loading state
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      setLoading(false); // Set loading to false once auth state is known
     });
 
     return () => unsubscribe();
   }, []);
 
-  const signInWithGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log(result.user);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const signInWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result.user);
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      alert(error.message);
+    }
   };
 
-  const logout = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("User signed out");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User signed out");
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+      alert(error.message);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, signInWithGoogle, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

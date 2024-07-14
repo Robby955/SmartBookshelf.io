@@ -1,29 +1,57 @@
-import { useAuth } from '../context/AuthContext';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { initializeApp, getApps } from 'firebase/app';
+import { useState, useEffect } from 'react';
 
-const withAdmin = (Component) => {
-  return (props) => {
-    const { user } = useAuth();
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
 
-    if (!user) {
-      return (
-        <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4 text-white">Access Denied</h1>
-          <p className="text-white">You need to be logged in to access this feature.</p>
-        </div>
-      );
+// Initialize Firebase app if not already initialized
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+export default function withAdmin(Component) {
+  return function AdminComponent(props) {
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      const user = auth.currentUser;
+
+      const checkAdmin = async () => {
+        if (user) {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists() && userDoc.data().isAdmin) {
+            setIsAdmin(true);
+          }
+        }
+        setLoading(false);
+      };
+
+      checkAdmin();
+    }, []);
+
+    if (loading) {
+      return <p>Loading...</p>;
     }
 
-    if (!user.isAdmin) { // Assuming `isAdmin` is a property on the user object
-      return (
-        <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4 text-white">Feature in Progress</h1>
-          <p className="text-white">This feature is in progress. Please check back later.</p>
-        </div>
-      );
+    if (!isAdmin) {
+      return <p>This feature is in progress</p>;
     }
 
     return <Component {...props} />;
   };
-};
-
-export default withAdmin;
+}
