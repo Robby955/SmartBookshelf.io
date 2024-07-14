@@ -12,6 +12,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from PIL import Image
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("credentials.json")
@@ -45,9 +47,20 @@ def resize_image(image, max_width=400, max_height=600):
 
 def clean_text(text):
     """Clean text by replacing newlines and multiple spaces with a single space."""
-    return ' '.join(text.split())  # Replace multiple spaces and newlines with a single space
+    return ' '.join(text.split())
+
+
+# Initialize Flask-Limiter
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["100 per day", "50 per hour"]
+)
+limiter.init_app(app)
+
+
 
 @app.route("/upload/", methods=["POST"])
+@limiter.limit("50 per day;10 per hour")  # Adjust limits as needed
 def upload_book():
     try:
         files = request.files.getlist("files")
