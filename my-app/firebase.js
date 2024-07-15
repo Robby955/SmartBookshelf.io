@@ -11,7 +11,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDuFLvTbB_f3ZkycBpTYMCdHsI-A3w86rU",
@@ -31,6 +31,15 @@ const auth = getAuth(app);
 
 // Initialize Firestore and get a reference to the service
 const db = getFirestore(app);
+
+// Enable offline data persistence
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err.code === 'failed-precondition') {
+    console.error('Failed to enable offline data persistence:', err);
+  } else if (err.code === 'unimplemented') {
+    console.error('Offline data persistence is not available in this browser:', err);
+  }
+});
 
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();

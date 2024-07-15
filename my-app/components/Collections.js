@@ -1,86 +1,128 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import PasswordProtect from '../components/PasswordProtect';
+import { db } from '../firebase'; // Ensure correct path to firebase config
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext'; // Ensure correct path to AuthContext
 
 const Collections = () => {
+  const { user } = useAuth();
   const [collections, setCollections] = useState([]);
-  const [newCollection, setNewCollection] = useState({ name: '', description: '', public: false });
+  const [newCollectionName, setNewCollectionName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const response = await axios.get('/api/collections', { params: { userId: 'currentUserId' } });
-        setCollections(response.data);
-      } catch (error) {
-        console.error('Error fetching collections:', error);
-      }
-    };
+    if (user) {
+      fetchCollections();
+    }
+  }, [user]);
 
-    fetchCollections();
-  }, []);
+  const fetchCollections = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'collections'));
+      const fetchedCollections = [];
+      querySnapshot.forEach((doc) => {
+        fetchedCollections.push({ id: doc.id, ...doc.data() });
+      });
+      setCollections(fetchedCollections);
+    } catch (error) {
+      console.error('Error fetching collections:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreateCollection = async () => {
+    if (!newCollectionName) return;
+    setLoading(true);
     try {
-      await axios.post('/api/collections', newCollection);
-      setNewCollection({ name: '', description: '', public: false });
-      const response = await axios.get('/api/collections', { params: { userId: 'currentUserId' } });
-      setCollections(response.data);
+      await addDoc(collection(db, 'collections'), {
+        name: newCollectionName,
+        owner: user.uid,
+        public: true,
+        books: [],
+      });
+      setNewCollectionName('');
+      fetchCollections();
     } catch (error) {
       console.error('Error creating collection:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteCollection = async (id) => {
+    setLoading(true);
     try {
-      await axios.delete('/api/collections', { data: { collectionId: id } });
-      setCollections(collections.filter(collection => collection.id !== id));
+      await deleteDoc(doc(db, 'collections', id));
+      fetchCollections();
     } catch (error) {
       console.error('Error deleting collection:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleTogglePublic = async (id, currentStatus) => {
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, 'collections', id), {
+        public: !currentStatus,
+      });
+      fetchCollections();
+    } catch (error) {
+      console.error('Error updating collection status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user) {
+    return <p className="text-center text-white">Please login to manage collections.</p>;
+  }
+
   return (
-    <PasswordProtect>
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4 text-white">Manage Collections</h1>
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Collection Name"
-            value={newCollection.name}
-            onChange={(e) => setNewCollection({ ...newCollection, name: e.target.value })}
-            className="input input-bordered w-full mb-2"
-          />
-          <input
-            type="text"
-            placeholder="Collection Description"
-            value={newCollection.description}
-            onChange={(e) => setNewCollection({ ...newCollection, description: e.target.value })}
-            className="input input-bordered w-full mb-2"
-          />
-          <label className="label cursor-pointer">
-            <span className="label-text text-white">Public</span>
-            <input
-              type="checkbox"
-              checked={newCollection.public}
-              onChange={(e) => setNewCollection({ ...newCollection, public: e.target.checked })}
-              className="checkbox checkbox-primary"
-            />
-          </label>
-          <button onClick={handleCreateCollection} className="btn btn-primary">Create Collection</button>
-        </div>
-        <div>
-          {collections.map((collection) => (
-            <div key={collection.id} className="bg-white p-4 rounded shadow mb-4">
-              <h2 className="text-xl font-bold">{collection.name}</h2>
-              <p>{collection.description}</p>
-              <p>{collection.public ? 'Public' : 'Private'}</p>
-              <button onClick={() => handleDeleteCollection(collection.id)} className="btn btn-danger">Delete</button>
-            </div>
-          ))}
-        </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4 text-white">Manage Collections</h1>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={newCollectionName}
+          onChange={(e) => setNewCollectionName(e.target.value)}
+          placeholder="New Collection Name"
+          className="input input-bordered w-full mb-2 text-black"
+        />
+        <button onClick={handleCreateCollection} className="btn btn-primary" disabled={loading}>
+          Create Collection
+        </button>
       </div>
-    </PasswordProtect>
+      {loading ? (
+        <p className="text-black">Loading...</p>
+      ) : (
+        <div>
+          {collections.length > 0 ? (
+            collections.map((collection) => (
+              <div key={collection.id} className="mb-4 p-4 bg-white rounded shadow">
+                <h2 className="text-xl font-bold mb-2 text-black">{collection.name}</h2>
+                <button
+                  onClick={() => handleTogglePublic(collection.id, collection.public)}
+                  className={`btn ${collection.public ? 'btn-success' : 'btn-warning'} mr-2`}
+                >
+                  {collection.public ? 'Make Private' : 'Make Public'}
+                </button>
+                <button
+                  onClick={() => handleDeleteCollection(collection.id)}
+                  className="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-black">No collections found.</p>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

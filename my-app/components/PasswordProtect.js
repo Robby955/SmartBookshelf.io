@@ -16,8 +16,15 @@ const PasswordProtect = ({ children }) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto p-4">
-        <form onSubmit={handlePasswordSubmit}>
+      <div className="min-h-screen flex flex-col items-center justify-start py-12" style={{
+        backgroundImage: "url('/background.jpg')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        color: "#ffffff"
+      }}>
+        <form onSubmit={handlePasswordSubmit} className="container mx-auto p-6 bg-gray-900 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center mt-24">
           <h1 className="text-2xl font-bold mb-4 text-white">Enter Admin Password</h1>
           <input
             type="password"

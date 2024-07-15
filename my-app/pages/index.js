@@ -1,9 +1,11 @@
+// pages/index.js
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { getFirestore, doc, collection, runTransaction } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
+import MultiCrop from '../components/MultiCrop';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,12 +31,13 @@ const auth = getAuth(app);
 export default function Home() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [croppedImages, setCroppedImages] = useState([]);
   const [extractedTexts, setExtractedTexts] = useState([]);
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
-  const [bookInfo, setBookInfo] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [user, setUser] = useState(null);
+  const [cropMode, setCropMode] = useState(false);
 
   const bookRefs = useRef([]);
 
@@ -50,10 +53,10 @@ export default function Home() {
     // Clear state on component mount (i.e., on refresh)
     setSelectedFiles([]);
     setUploadedImages([]);
+    setCroppedImages([]);
     setExtractedTexts([]);
     setError('');
     setBookCount(null);
-    setBookInfo(null);
     setIsAnalyzing(false);
   }, []);
 
@@ -74,8 +77,14 @@ export default function Home() {
     setUploadedImages(newImages);
   };
 
+  const handleCropComplete = (blob, dataUrl) => {
+    setCroppedImages(prev => [...prev, { blob, dataUrl }]);
+  };
+
   const handleUpload = async () => {
-    if (selectedFiles.length === 0) {
+    const imagesToUpload = cropMode ? croppedImages.map(image => image.blob) : selectedFiles;
+
+    if (imagesToUpload.length === 0) {
       setError('Please upload at least one photo first');
       return;
     }
@@ -83,7 +92,7 @@ export default function Home() {
     setIsAnalyzing(true); // Show analyzing message
 
     const formData = new FormData();
-    selectedFiles.forEach(file => {
+    imagesToUpload.forEach(file => {
       formData.append('files', file);
     });
 
@@ -111,7 +120,6 @@ export default function Home() {
         const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
         setExtractedTexts(sortedBooks);
         setBookCount(sortedBooks.length);
-        setBookInfo(null);
         bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
 
         // Only update Firestore if the user is logged in
@@ -148,30 +156,8 @@ export default function Home() {
     }
   };
 
-  const handleBookSelect = async (event) => {
-    const selectedText = event.target.value;
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/books/search_book/${encodeURIComponent(selectedText)}`);
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      const data = await response.json();
-      console.log('Book info:', data);
-      setBookInfo(data.books.length > 0 ? data.books[0] : null);
-
-      const index = extractedTexts.findIndex(item => item.text === selectedText);
-      if (index !== -1 && bookRefs.current[index]) {
-        bookRefs.current[index].scrollIntoView({ behavior: 'smooth' });
-      }
-    } catch (error) {
-      console.error('Error fetching book info:', error);
-      setError('Error fetching book info, please try again.');
-    }
-  };
-
   return (
-    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
+    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('/background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
       <Head>
         <title>SmartBookshelf.io</title>
         <meta name="description" content="Upload a book image and extract text" />
@@ -184,12 +170,17 @@ export default function Home() {
           <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
           <ol className="list-decimal list-inside text-left text-lg">
             <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
-            <li className="mb-2">Select one or more photos of your bookshelf or take new ones.</li>
-            <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract book titles.</li>
+            <li className="mb-2">Select one or more photos of your bookshelves (one photo per shelf) or take new ones.</li>
+            {cropMode && <li className="mb-2">Crop the areas of interest and click &quot;Add Crop&quot;. Repeat if necessary.</li>}
+            <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract the text from the spine.</li>
           </ol>
         </div>
 
         <div className="w-full mb-6">
+          <div className="flex items-center mb-4">
+            <label className="text-white mr-2">Crop Mode</label>
+            <input type="checkbox" checked={cropMode} onChange={() => setCropMode(!cropMode)} />
+          </div>
           <input
             type="file"
             accept="image/*"
@@ -202,42 +193,40 @@ export default function Home() {
               <p>Selected files: {selectedFiles.length}</p>
             </div>
           )}
-          {bookCount !== null && bookCount > 0 && (
-            <div className="w-full text-center text-xl font-bold white mb-4">
-              # of Books Detected: {bookCount}
+          {uploadedImages.length > 0 && cropMode && (
+            <div className="w-full mb-6">
+              <h2 className="text-xl font-bold text-white mb-4">Crop your images</h2>
+              {uploadedImages.map((image, index) => (
+                <div key={index} className="relative w-full mb-4">
+                  <MultiCrop image={image} onCropComplete={handleCropComplete} />
+                  <button
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
+                    style={{ width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center', fontSize: '14px' }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
           )}
-          {extractedTexts.length > 0 && (
+          {uploadedImages.length > 0 && !cropMode && (
             <div className="w-full mb-4">
-              <label htmlFor="books-dropdown" className="block mb-2 text-lg font-bold text-white">
-                Select a Book Title:
-              </label>
-              <select
-                id="books-dropdown"
-                className="select select-bordered w-full"
-                style={{ color: 'black' }} // Ensure the text is black
-                onChange={handleBookSelect}
-              >
-                {extractedTexts.map((item, index) => (
-                  <option key={index} value={item.text}>
-                    {item.text}
-                  </option>
-                ))}
-              </select>
+              <h2 className="text-xl font-bold text-white mb-4">Uploaded Images</h2>
+              {uploadedImages.map((image, index) => (
+                <div key={index} className="relative w-full mb-4">
+                  <Image src={image} alt={`Uploaded ${index + 1}`} layout="responsive" width={500} height={300} className="rounded-lg" />
+                  <button
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
+                    style={{ width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center', fontSize: '14px' }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
           )}
-          {uploadedImages.map((image, index) => (
-            <div key={index} className="relative w-full h-64 mb-4 border rounded-lg overflow-hidden">
-              <Image src={image} alt={`Uploaded ${index + 1}`} layout="fill" objectFit="contain" />
-              <button
-                onClick={() => handleRemoveImage(index)}
-                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
-                style={{ width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center', fontSize: '14px' }}
-              >
-                X
-              </button>
-            </div>
-          ))}
           <button
             onClick={handleUpload}
             className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
@@ -253,30 +242,51 @@ export default function Home() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {extractedTexts.map((item, index) => (
-            <div key={index} className="card shadow-md rounded-lg p-4 bg-white" ref={el => bookRefs.current[index] = el}>
-              <h2 className="text-lg font-semibold mb-2 text-gray-800">Extracted Text:</h2>
-              <p className="text-gray-700">{item.text || 'No text detected'}</p>
-              <Image
-                src={item.image_url}
-                alt={`Book ${index + 1}`}
-                layout="responsive"
-                width={500}
-                height={300}
-                className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
-              />
+        {extractedTexts.length > 0 && (
+          <div className="w-full mt-8">
+            <h2 className="text-xl font-bold text-white mb-4">Extracted Texts</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {extractedTexts.map((item, index) => (
+                <div key={index} className="card shadow-md rounded-lg p-4 bg-white" ref={el => bookRefs.current[index] = el}>
+                  <h2 className="text-lg font-semibold mb-2 text-gray-800">Extracted Text:</h2>
+                  <p className="text-gray-700">{item.text || 'No text detected'}</p>
+                  <Image
+                    src={item.image_url}
+                    alt={`Book ${index + 1}`}
+                    layout="responsive"
+                    width={500}
+                    height={300}
+                    className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
-        {bookInfo && (
-          <div className="w-full mt-8 bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Book Information</h2>
-            <p><strong>Title:</strong> {bookInfo.title}</p>
-            <p><strong>Author:</strong> {bookInfo.author}</p>
-            <p><strong>Year:</strong> {bookInfo.publish_year}</p>
-            <p><strong>Score:</strong> {bookInfo.score}</p>
+        {cropMode && croppedImages.length > 0 && (
+          <div className="w-full mt-8">
+            <h2 className="text-xl font-bold text-white mb-4">Cropped Images</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {croppedImages.map((image, index) => (
+                <div key={index} className="card shadow-md rounded-lg p-4 bg-white">
+                  <Image
+                    src={image.dataUrl}
+                    alt={`Cropped ${index + 1}`}
+                    layout="responsive"
+                    width={500}
+                    height={300}
+                    className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {bookCount !== null && bookCount > 0 && (
+          <div className="w-full text-center text-xl font-bold text-white mb-4">
+            # of Books Detected: {bookCount}
           </div>
         )}
 

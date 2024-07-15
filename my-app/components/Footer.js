@@ -14,14 +14,15 @@ const Footer = () => {
             <a className="text-white">Privacy Policy</a>
           </Link>
           <Link href="/data-deletion-policy" legacyBehavior>
-            <a className="text-white">Data Deletion Policy</a>
+            <a className="text-white">Data Deletion</a>
           </Link>
           <Link href="/terms-of-service" legacyBehavior>
             <a className="text-white">Terms of Service</a>
           </Link>
-          <Link href="https://smartbreed.io" legacyBehavior>
-            <a className="text-white">Visit SmartBreed.io</a>
-          </Link>
+<Link href="https://smartbreed.io" legacyBehavior>
+  <a style={{ fontSize: '16px', color: 'white' }}>Try SmartBreed.io</a>
+</Link>
+
         </div>
       </div>
     </footer>

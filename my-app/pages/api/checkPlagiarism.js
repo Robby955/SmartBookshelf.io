@@ -16,7 +16,7 @@ export const config = {
 
 const readFile = util.promisify(fs.readFile);
 
-export default async (req, res) => {
+const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -50,3 +50,5 @@ export default async (req, res) => {
     }
   });
 };
+
+export default handler;
