@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "smartshelf-426516",
+  "private_key_id": "0587eace70cc2219bde7f7078a3e55e3e35fb7e2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCJMfIfMKOnOt6l\nEjrbSOdlxZGuitp+3T0iKpQPx5ux0+RFvxjHDCPJetKmk2WRremiY6wr1D3anaCc\ndQQSwzdwcYFMoQgfUVlR5WEW/xOb0mKP5yG+I/H3FQL49KKBaQgQ92HCDpvfy86V\nz/ur/gzcreUfWGTqw44RLOHwAHu1bF3cwtxk5PEgLcKnGPa9DqSj5vX/mq0EHr+Q\n7TQezPVgbhNMkvSXV2GFV2fkAdD58bak9HYiyWtjXXp97ZVsI2xC6MRpRyQpYoYH\nRpbKgDkLnJMk67vOJsb/GNQ7KmiOUG2gWeWmfEkmBeZsi2Jn+6EVoRdD4D6tG/+h\nl501PAMLAgMBAAECggEAK+NbZhjkMWoGsV28kEupIohqSyDGNtFFbjmatdWP+/oh\nyyIPphU/GYP+ASWj10+ALt+dw0OZKedE6ugQDoR+pqzYxQ+6jnIylZ1ASt/8gNtz\nhj9VLwNGs1j4Y3W2ypkz6GGK105fFN+YzZoEE4goyyuh4T4gwm0edGYcPO+ao3V4\nRUVTDv5vnzPQtcDOKSL4h67VcOcUA5VryAuBPKz1eHa9wGttlv4x0uTzAwYF/isf\nMHbTwbkyrzWKmSQSYxZbQLR2Bk2+C+r7Zu1GprEAa+Oe1ykKbRjaz5RIrDUWw9lb\n4iQFlowQxQagrUaoFoU1tRRxHleyDBo5h7hFZnwyUQKBgQC8l/n8t+WqAU58RYjL\n0lRf6VoW9JrnQpV4NmsLaNjtzlBNG8jIXHo6ScPcFlnfYO4xcSpG7u9JaodyZw7/\nWbRLimEiPeR2UQd3X0OdNqRlSw59e44B/dKlcw9a3wNakXHn5DIeb5on5Up4DjA1\njGKnOmJe26+QluFA5n5BTvoxswKBgQC6OxT99GmKh135vS/ZhS5GgOYFYD+vWm9W\npeUDspGF5hmL7kZxN0nq1j3Qpfhs07jVo9xNdEoHGmzf0mhLIdjn87HcoCXzStHT\n/ABqcVGJxKIHOAbTkJKNzYwEVm24Ermf4mzez5u+KS9QxU0zm7T130XTGj0Omort\nArSt4stNSQKBgAEYrRZgB1DGsysbyGDO9zibha+OenwPsgjB4Dtvv5saUPMxzygD\nCZ7fIOldo+YdjSTycHl7GB8IJINwv/CSF+88fbYSQArEC9QQ1LbMQ4ZnOk1Wc4vl\nat0VXyh7FWzoXY4okHYG1hGXTqiGBJe7GjO4riu5ATtI9URIUsGUcPXrAoGAANI7\n4HbQdFTufChyapIkxxjQatumzD4o2Yf3v5FtBNsj57MQSnWE9O0m7qGcu9YfLYoA\ncbL+lJNwQXhrD1HB5Bv1/9QQ9sawsC+fTNjdFC9yy3dayFoN22Q5ptc+up4ShXr5\nIe5mcGs8Ey4bjgu0u5TVeP3XoRXbYPovE8k5PkkCgYAK4zOoe2Wr1MeAsXKUwLXj\ncFaT41z3cheSOcOJlrFwg0Q1DL1YySVBePNExbpi9Z/0daIUJOnMxDWIUOZLSCWj\nvNN+pBIVvKDoAJFryrZyflftjx+CnuYdM3RyNJSMlK3LTWXeMRr0Q/Vk2mo2cQo5\n2hQJzzWOu0ViUMsOQ+P7zg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "vision-api-sa@smartshelf-426516.iam.gserviceaccount.com",
+  "client_id": "108005887996655358330",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vision-api-sa%40smartshelf-426516.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

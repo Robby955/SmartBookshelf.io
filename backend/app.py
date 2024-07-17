@@ -10,10 +10,11 @@ import cv2
 import numpy as np
 import firebase_admin
 from firebase_admin import credentials, firestore
-from datetime import datetime
+from datetime import datetime, timedelta
 from PIL import Image
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from google.oauth2 import service_account
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("credentials.json")
@@ -27,13 +28,14 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes and origins
 
-# Initialize Google Cloud Storage client
-storage_client = storage.Client()
+# Initialize Google Cloud Storage client with service account credentials
+credentials = service_account.Credentials.from_service_account_file('credentials.json')
+storage_client = storage.Client(credentials=credentials)
 bucket_name = 'my-book-images-detection'
 bucket = storage_client.bucket(bucket_name)
 
 # Initialize Google Cloud Vision API client
-vision_client = vision.ImageAnnotatorClient()
+vision_client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # Load the YOLOv5 model
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
@@ -49,22 +51,58 @@ def clean_text(text):
     """Clean text by replacing newlines and multiple spaces with a single space."""
     return ' '.join(text.split())
 
-
 # Initialize Flask-Limiter
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["100 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"]
 )
 limiter.init_app(app)
 
 
+@app.route('/get-signed-url', methods=['GET'])
+def get_signed_url():
+    try:
+        file_name = request.args.get('fileName')
+        if not file_name:
+            logger.error('Missing fileName parameter')
+            return jsonify({'error': 'Missing fileName parameter'}), 400
+
+        logger.debug(f'File name: {file_name}')
+        logger.debug(f'Bucket name: {bucket_name}')
+
+        blob = bucket.blob(file_name)
+
+        url = blob.generate_signed_url(
+            version="v4",
+            expiration=timedelta(minutes=15),
+            method="GET",
+        )
+
+        logger.debug(f'Signed URL: {url}')
+        return jsonify({'url': url})
+    except Exception as e:
+        logger.error("Error generating signed URL: %s", e)
+        logger.error(traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/routes', methods=['GET'])
+def list_routes():
+    import urllib
+    output = []
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods)
+        line = urllib.parse.unquote(f"{rule.endpoint}: {rule.rule} [{methods}]")
+        output.append(line)
+    return jsonify(output)
+
 
 @app.route("/upload/", methods=["POST"])
-@limiter.limit("50 per day;10 per hour")  # Adjust limits as needed
+@limiter.limit("200 per day; 50 per hour")
 def upload_book():
     try:
         files = request.files.getlist("files")
-        user_id = request.form.get('userID')  # Ensure userID is passed from frontend
+        user_id = request.form.get('userID')
 
         if not files:
             raise ValueError("No files provided")
@@ -104,14 +142,14 @@ def upload_book():
 
                 if class_name == 'book':
                     book_img = img_rgb[int(y1):int(y2), int(x1):int(x2)]
-                    book_img = resize_image(book_img)  # Resize the image
+                    book_img = resize_image(book_img)
                     _, encoded_image = cv2.imencode('.jpg', book_img)
                     content = encoded_image.tobytes()
 
                     # Save cropped book image to Google Cloud Storage
                     book_blob = bucket.blob(f"cropped_books/book_{x1}_{y1}_{x2}_{y2}.jpg")
                     book_blob.upload_from_string(content, content_type='image/jpeg')
-                    book_img_url = book_blob.public_url
+                    book_img_url = book_blob.name
                     logger.debug(f"Book image uploaded to {book_img_url}")
 
                     image = vision.Image(content=content)
@@ -180,7 +218,7 @@ def export_csv():
 
         for doc in docs:
             book = doc.to_dict()
-            text = clean_text(book['text'])  # Clean the text
+            text = clean_text(book['text'])
             writer.writerow([text, book['imageURL']])
 
         output.seek(0)
@@ -203,4 +241,4 @@ def home():
 
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
+    serve(app, host="0.0.0.0", port=8000)
