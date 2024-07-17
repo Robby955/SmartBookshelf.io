@@ -1,4 +1,3 @@
-// components/MultiCrop.js
 import React, { useRef } from 'react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
@@ -15,7 +14,7 @@ const MultiCrop = ({ image, onCropComplete }) => {
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 p-4 bg-gray-800 rounded-lg shadow-lg">
       <Cropper
         ref={cropperRef}
         src={image}
@@ -26,7 +25,15 @@ const MultiCrop = ({ image, onCropComplete }) => {
       />
       <button
         onClick={handleAddCrop}
-        className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        className="btn btn-primary w-full mt-4"
+        style={{
+          backgroundColor: '#1E40AF',
+          borderColor: '#1E40AF',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '10px 0',
+          borderRadius: '8px',
+        }}
         type="button"
       >
         Add Crop

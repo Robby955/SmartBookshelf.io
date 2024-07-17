@@ -25,20 +25,18 @@ const DataDeletionPolicy = () => {
             </p>
 
             <p className="mb-4">
-              At SmartBookshelf.io, we respect your right to privacy and provide you with the ability to delete your
+              At SmartBookshelf.io, your right to privacy is respected and you are provided with the ability to delete your
               data.
             </p>
 
             <h2 className="text-2xl font-semibold mb-4">How to Delete Your Data</h2>
             <p className="mb-4">
-              If you wish to delete your data, please contact us at rob@smartbreed.io with your request. We will process
-              your request and confirm the deletion. This will involve deleting your user information and any associated
-              data from our servers.
+              If you wish to delete your data, please contact us at rob@smartbookshelf.io with your request.
             </p>
 
             <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
             <p className="mb-4">
-              If you have any questions about our data deletion policy, please contact me at rob@smartbreed.io.
+              If you have any questions about the data deletion policy, please contact me at rob@smartbookshelf.io.
             </p>
           </div>
         </div>

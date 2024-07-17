@@ -8,7 +8,7 @@ const Footer = () => {
         <p>&copy; 2024 SmartBookshelf.io. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-4">
           <Link href="/feedback" legacyBehavior>
-            <a className="text-white">Feedback</a>
+            <a style={{fontSize: '14px', color: 'white'}}>Feedback</a>
           </Link>
           <Link href="/privacy-policy" legacyBehavior>
             <a className="text-white">Privacy Policy</a>
@@ -20,7 +20,7 @@ const Footer = () => {
             <a className="text-white">Terms of Service</a>
           </Link>
 <Link href="https://smartbreed.io" legacyBehavior>
-  <a style={{ fontSize: '16px', color: 'white' }}>Try SmartBreed.io</a>
+  <a style={{ fontSize: '14px', color: 'white' }}>SmartBreed.io</a>
 </Link>
 
         </div>

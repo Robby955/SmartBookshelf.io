@@ -1,32 +1,10 @@
-// pages/index.js
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { getFirestore, doc, collection, runTransaction } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { initializeApp, getApps } from 'firebase/app';
+import { doc, collection, runTransaction } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import MultiCrop from '../components/MultiCrop';
-
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
-};
-
-// Initialize Firebase
-let app;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApps()[0];
-}
-
-const db = getFirestore(app);
-const auth = getAuth(app);
+import { db, auth } from '../lib/firebaseClient';
 
 export default function Home() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -38,6 +16,10 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [user, setUser] = useState(null);
   const [cropMode, setCropMode] = useState(false);
+  const [correctedBookCount, setCorrectedBookCount] = useState(null);
+  const [analyzingText, setAnalyzingText] = useState('');
+  const [uploadAttempted, setUploadAttempted] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const bookRefs = useRef([]);
 
@@ -58,7 +40,16 @@ export default function Home() {
     setError('');
     setBookCount(null);
     setIsAnalyzing(false);
+    setUploadAttempted(false);
   }, []);
+
+  useEffect(() => {
+    if (isAnalyzing) {
+      updateAnalyzingText();
+    } else {
+      setAnalyzingText('');
+    }
+  }, [isAnalyzing]);
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
@@ -77,11 +68,33 @@ export default function Home() {
     setUploadedImages(newImages);
   };
 
+  const handleRemoveCroppedImage = (index) => {
+    const newCroppedImages = [...croppedImages];
+    newCroppedImages.splice(index, 1);
+    setCroppedImages(newCroppedImages);
+  };
+
   const handleCropComplete = (blob, dataUrl) => {
     setCroppedImages(prev => [...prev, { blob, dataUrl }]);
   };
 
+  const updateAnalyzingText = () => {
+    let texts = ['Analyzing...', 'Cropping Books...', 'Extracting Text...', 'Loading Summary...'];
+    let index = 0;
+
+    const interval = setInterval(() => {
+      if (isAnalyzing) {
+        setAnalyzingText(texts[index]);
+        index = (index + 1) % texts.length;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5000);
+  };
+
   const handleUpload = async () => {
+    setUploadAttempted(true); // Set uploadAttempted to true when the upload button is clicked
+
     const imagesToUpload = cropMode ? croppedImages.map(image => image.blob) : selectedFiles;
 
     if (imagesToUpload.length === 0) {
@@ -90,6 +103,8 @@ export default function Home() {
     }
 
     setIsAnalyzing(true); // Show analyzing message
+    setAnalyzingText('Analyzing...');
+    updateAnalyzingText(); // Start updating the text
 
     const formData = new FormData();
     imagesToUpload.forEach(file => {
@@ -117,9 +132,11 @@ export default function Home() {
       const result = await response.json();
       console.log('Backend response:', result);
       if (result.extracted_texts) {
+        setIsAnalyzing(false); // Stop updating the text
         const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
         setExtractedTexts(sortedBooks);
         setBookCount(sortedBooks.length);
+        setCorrectedBookCount(sortedBooks.length);
         bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
 
         // Only update Firestore if the user is logged in
@@ -153,11 +170,24 @@ export default function Home() {
       setBookCount(null);
     } finally {
       setIsAnalyzing(false); // Hide analyzing message
+      setAnalyzingText(''); // Reset the analyzing text
     }
   };
 
+  const handleRefresh = () => {
+    setSelectedFiles([]);
+    setUploadedImages([]);
+    setCroppedImages([]);
+    setExtractedTexts([]);
+    setError('');
+    setBookCount(null);
+    setCorrectedBookCount(null);
+    setUploadAttempted(false);
+    setShowFeedback(false);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('/background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
+    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
       <Head>
         <title>SmartBookshelf.io</title>
         <meta name="description" content="Upload a book image and extract text" />
@@ -215,7 +245,7 @@ export default function Home() {
               <h2 className="text-xl font-bold text-white mb-4">Uploaded Images</h2>
               {uploadedImages.map((image, index) => (
                 <div key={index} className="relative w-full mb-4">
-                  <Image src={image} alt={`Uploaded ${index + 1}`} layout="responsive" width={500} height={300} className="rounded-lg" />
+                  <Image src={image} alt={`Uploaded ${index + 1}`} layout="responsive" width={500} height={300} className="w-full max-h-64 object-contain rounded-lg" />
                   <button
                     onClick={() => handleRemoveImage(index)}
                     className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
@@ -232,13 +262,70 @@ export default function Home() {
             className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
             disabled={isAnalyzing}
           >
-            {isAnalyzing ? 'Analyzing...' : 'Upload'}
+            {analyzingText || 'Upload'}
           </button>
         </div>
 
+        {uploadAttempted && (
+          <button
+            onClick={handleRefresh}
+            className="btn w-auto mb-4"
+            style={{ backgroundColor: '#1E90FF', color: '#ffffff' }}
+          >
+            Start Over
+          </button>
+        )}
+
         {isAnalyzing && (
           <div className="w-full text-center text-lg font-bold text-white mb-4">
-            Analyzing...
+            {analyzingText}
+          </div>
+        )}
+
+        {bookCount !== null && (
+          <div className="w-full text-center text-xl font-bold text-white mb-4">
+            <div className="flex items-center justify-center">
+              <label className="mr-2"># of Books Detected:</label>
+              <span className="font-semibold">{bookCount}</span>
+            </div>
+            <div className="mt-2">
+              <label className="mr-2">Extracted Texts:</label>
+              <select
+                className="text-gray-900 rounded p-1 w-full max-w-md"
+                value={correctedBookCount}
+                onChange={(e) => setCorrectedBookCount(e.target.value)}
+              >
+                {extractedTexts.map((text, index) => (
+                  <option key={index} value={index}>
+                    {text.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {bookCount !== null && (
+          <button
+            onClick={() => setShowFeedback(true)}
+            className="btn btn-secondary w-auto mb-4"
+            style={{ backgroundColor: 'red', color: '#ffffff' }}
+          >
+            Feedback
+          </button>
+        )}
+
+        {showFeedback && (
+          <div className="w-full text-center text-xl font-bold text-white mb-4">
+            <label>
+              Correct # of Books Detected:
+              <input
+                type="number"
+                value={correctedBookCount}
+                onChange={(e) => setCorrectedBookCount(e.target.value)}
+                className="ml-2 text-gray-900 rounded p-1"
+              />
+            </label>
           </div>
         )}
 
@@ -247,7 +334,7 @@ export default function Home() {
             <h2 className="text-xl font-bold text-white mb-4">Extracted Texts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {extractedTexts.map((item, index) => (
-                <div key={index} className="card shadow-md rounded-lg p-4 bg-white" ref={el => bookRefs.current[index] = el}>
+                <div key={index} className="card shadow-md rounded-lg p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e0e7ff)' }} ref={el => bookRefs.current[index] = el}>
                   <h2 className="text-lg font-semibold mb-2 text-gray-800">Extracted Text:</h2>
                   <p className="text-gray-700">{item.text || 'No text detected'}</p>
                   <Image
@@ -257,6 +344,17 @@ export default function Home() {
                     width={500}
                     height={300}
                     className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Corrected text"
+                    value={item.correctedText || ''}
+                    onChange={(e) => {
+                      const newExtractedTexts = [...extractedTexts];
+                      newExtractedTexts[index].correctedText = e.target.value;
+                      setExtractedTexts(newExtractedTexts);
+                    }}
+                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg p-2 mb-2"
                   />
                 </div>
               ))}
@@ -269,7 +367,7 @@ export default function Home() {
             <h2 className="text-xl font-bold text-white mb-4">Cropped Images</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {croppedImages.map((image, index) => (
-                <div key={index} className="card shadow-md rounded-lg p-4 bg-white">
+                <div key={index} className="relative card shadow-md rounded-lg p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e0e7ff)' }}>
                   <Image
                     src={image.dataUrl}
                     alt={`Cropped ${index + 1}`}
@@ -278,15 +376,16 @@ export default function Home() {
                     height={300}
                     className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
                   />
+                  <button
+                    onClick={() => handleRemoveCroppedImage(index)}
+                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
+                    style={{ width: '24px', height: '24px', lineHeight: '24px', textAlign: 'center', fontSize: '14px' }}
+                  >
+                    X
+                  </button>
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {bookCount !== null && bookCount > 0 && (
-          <div className="w-full text-center text-xl font-bold text-white mb-4">
-            # of Books Detected: {bookCount}
           </div>
         )}
 

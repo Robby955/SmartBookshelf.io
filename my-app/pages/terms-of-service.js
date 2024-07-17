@@ -52,7 +52,7 @@ const TermsOfService = () => {
 
           <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
           <p className="mb-4">
-            If you have any questions about these terms, please contact me at rob@smartbreed.io.
+            If you have any questions about these terms, please contact me at rob@smartbookshelf.io.
           </p>
         </div>
       </div>

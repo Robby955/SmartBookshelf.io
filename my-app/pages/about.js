@@ -90,10 +90,21 @@ const About = () => {
             accuracy of our system.
           </p>
 
+          <h2 className="text-2xl font-semibold mb-4 text-white">Crop Feature</h2>
+          <p className="mb-6 text-white">
+            The crop feature allows you to select specific areas of your uploaded images to focus on. This is particularly useful if the image contains multiple books and you want to refine the detection process. Simply upload an image, use the cropping tool to select the desired areas, and then click &quot;Add Crop&quot; to save your selection. You can add multiple crops if needed.
+          </p>
+
+          <h2 className="text-2xl font-semibold mb-4 text-white">Disclaimer</h2>
+          <p className="mb-6 text-white">
+            SmartBookshelf.io is a project in development, and while we strive to provide accurate and efficient results, there may be inaccuracies in text detection and extraction. For images with
+            poor cropping, bad lighting or tons of books, the results returned by the system may not be accurate. However, it should give you a rough estimate on at least the number of books regardless. We appreciate your understanding and welcome any feedback to help us improve the system.
+          </p>
+
           <h2 className="text-2xl font-semibold mb-4 text-white">Get in Touch</h2>
           <p className="text-white">
-            If you have any questions, feedback, or suggestions, we&apos;d love to hear from you! Feel free to reach
-            out using the <Link href="/feedback" legacyBehavior><a className="text-blue-500 underline">feedback form</a></Link>. You can also reach me at robbysneiderman@gmail.com.
+            If you have any questions, feedback, or suggestions, feel free to reach
+            out using the <Link href="/feedback" legacyBehavior><a className="text-blue-500 underline">feedback form</a></Link>. You can also reach me at rob@smartbookshelf.io.
           </p>
         </div>
       </div>
