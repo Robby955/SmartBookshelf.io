@@ -78,18 +78,36 @@ export default function Home() {
     setCroppedImages(prev => [...prev, { blob, dataUrl }]);
   };
 
-  const updateAnalyzingText = () => {
-    let texts = ['Analyzing...', 'Cropping Books...', 'Extracting Text...', 'Loading Summary...'];
-    let index = 0;
+const updateAnalyzingText = () => {
+  const texts = ['Analyzing...', 'Detecting Books...', 'Extracting Texts...', 'Loading Summary...'];
+  let index = 0;
 
-    const interval = setInterval(() => {
-      if (isAnalyzing) {
-        setAnalyzingText(texts[index]);
-        index = (index + 1) % texts.length;
+  const interval = setInterval(() => {
+    if (isAnalyzing) {
+      setAnalyzingText(texts[index]);
+      index = (index + 1) % texts.length;
+    } else {
+      clearInterval(interval);
+
+    }
+  }, 5000);
+};
+
+  const getSignedUrl = async (fileName) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    try {
+      const response = await fetch(`${backendUrl}/get-signed-url?fileName=${encodeURIComponent(fileName)}`);
+      const data = await response.json();
+      if (response.ok) {
+        return data.url;
       } else {
-        clearInterval(interval);
+        throw new Error(data.error || 'Failed to get signed URL');
       }
-    }, 5000);
+    } catch (error) {
+      console.error('Error getting signed URL:', error);
+      setError('Error getting signed URL, please try again.');
+      return null;
+    }
   };
 
   const handleUpload = async () => {
@@ -102,7 +120,7 @@ export default function Home() {
       return;
     }
 
-    setIsAnalyzing(true); // Show analyzing message
+    setIsAnalyzing(true);
     setAnalyzingText('Analyzing...');
     updateAnalyzingText(); // Start updating the text
 
@@ -133,7 +151,14 @@ export default function Home() {
       console.log('Backend response:', result);
       if (result.extracted_texts) {
         setIsAnalyzing(false); // Stop updating the text
-        const sortedBooks = result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1);
+        setAnalyzingText(''); // Reset the analyzing text
+        const sortedBooks = await Promise.all(
+          result.extracted_texts.sort((a, b) => a.coordinates.x1 - b.coordinates.x1).map(async (book) => {
+            const signedUrl = await getSignedUrl(book.image_url);
+            return { ...book, image_url: signedUrl };
+          })
+        );
+
         setExtractedTexts(sortedBooks);
         setBookCount(sortedBooks.length);
         setCorrectedBookCount(sortedBooks.length);
@@ -163,28 +188,41 @@ export default function Home() {
         console.error('No extracted texts found in the response:', result);
         setError('No extracted texts found.');
         setBookCount(null);
+        setIsAnalyzing(false); // Ensure to stop analyzing if no texts are found
       }
     } catch (error) {
       console.error('Error uploading file:', error);
       setError('Error uploading file, please try again.');
       setBookCount(null);
-    } finally {
-      setIsAnalyzing(false); // Hide analyzing message
-      setAnalyzingText(''); // Reset the analyzing text
+      setIsAnalyzing(false); // Ensure to stop analyzing on error
     }
   };
+const handleRefresh = () => {
+  // Clear the file input element
+  document.querySelector('input[type="file"]').value = '';
 
-  const handleRefresh = () => {
-    setSelectedFiles([]);
-    setUploadedImages([]);
-    setCroppedImages([]);
-    setExtractedTexts([]);
-    setError('');
-    setBookCount(null);
-    setCorrectedBookCount(null);
-    setUploadAttempted(false);
-    setShowFeedback(false);
-  };
+  // Revoke object URLs to free up memory
+  uploadedImages.forEach((imageUrl) => URL.revokeObjectURL(imageUrl));
+  croppedImages.forEach((image) => URL.revokeObjectURL(image.dataUrl));
+
+  // Reset state variables
+  setSelectedFiles([]);
+  setUploadedImages([]);
+  setCroppedImages([]);
+  setExtractedTexts([]);
+  setError('');
+  setBookCount(null);
+  setCorrectedBookCount(null);
+  setUploadAttempted(false);
+  setShowFeedback(false);
+  setIsAnalyzing(false);
+  setAnalyzingText('');
+  setCropMode(false); // Reset crop mode
+  setUser(null); // Clear user information
+
+  // Optional: Perform a full page reload
+  window.location.reload();
+};
 
   return (
     <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
@@ -262,7 +300,7 @@ export default function Home() {
             className={`btn btn-primary w-full ${isAnalyzing ? 'btn-disabled' : ''}`}
             disabled={isAnalyzing}
           >
-            {analyzingText || 'Upload'}
+              { isAnalyzing ? analyzingText : (uploadAttempted ? 'Upload again' : 'Upload') }
           </button>
         </div>
 
