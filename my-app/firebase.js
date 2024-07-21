@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -13,37 +13,48 @@ import {
 } from "firebase/auth";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDuFLvTbB_f3ZkycBpTYMCdHsI-A3w86rU",
-  authDomain: "smartbookshelf-6c6c4.firebaseapp.com",
-  projectId: "smartbookshelf-6c6c4",
-  storageBucket: "smartbookshelf-6c6c4.appspot.com",
-  messagingSenderId: "795958126743",
-  appId: "1:795958126743:web:your-app-id",
-  measurementId: "G-measurement-id",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const apps = getApps();
+let firebaseApp;
+if (!apps.length) {
+  firebaseApp = initializeApp(firebaseConfig);
+} else {
+  firebaseApp = apps[0];
+}
 
 // Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+const auth = getAuth(firebaseApp);
 
 // Initialize Firestore and get a reference to the service
-const db = getFirestore(app);
+const db = getFirestore(firebaseApp);
 
 // Enable offline data persistence
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code === 'failed-precondition') {
-    console.error('Failed to enable offline data persistence:', err);
-  } else if (err.code === 'unimplemented') {
-    console.error('Offline data persistence is not available in this browser:', err);
-  }
-});
+if (typeof window !== "undefined") {
+  enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.error('Failed to enable offline data persistence:', err);
+    } else if (err.code === 'unimplemented') {
+      console.error('Offline data persistence is not available in this browser:', err);
+    }
+  });
+}
 
+// Providers
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
+// Auth functions
 const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);

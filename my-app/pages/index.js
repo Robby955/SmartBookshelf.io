@@ -6,11 +6,13 @@ import { onAuthStateChanged } from 'firebase/auth';
 import MultiCrop from '../components/MultiCrop';
 import { db, auth } from '../lib/firebaseClient';
 
+
 export default function Home() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [croppedImages, setCroppedImages] = useState([]);
   const [extractedTexts, setExtractedTexts] = useState([]);
+  const [gptSuggestions, setGptSuggestions] = useState([]);
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -20,6 +22,7 @@ export default function Home() {
   const [analyzingText, setAnalyzingText] = useState('');
   const [uploadAttempted, setUploadAttempted] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const bookRefs = useRef([]);
 
@@ -78,20 +81,19 @@ export default function Home() {
     setCroppedImages(prev => [...prev, { blob, dataUrl }]);
   };
 
-const updateAnalyzingText = () => {
-  const texts = ['Analyzing...', 'Detecting Books...', 'Extracting Texts...', 'Loading Summary...'];
-  let index = 0;
+  const updateAnalyzingText = () => {
+    const texts = ['Analyzing...', 'Detecting Books...', 'Extracting Texts...', 'Loading Summary...'];
+    let index = 0;
 
-  const interval = setInterval(() => {
-    if (isAnalyzing) {
-      setAnalyzingText(texts[index]);
-      index = (index + 1) % texts.length;
-    } else {
-      clearInterval(interval);
-
-    }
-  }, 5000);
-};
+    const interval = setInterval(() => {
+      if (isAnalyzing) {
+        setAnalyzingText(texts[index]);
+        index = (index + 1) % texts.length;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5000);
+  };
 
   const getSignedUrl = async (fileName) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -107,6 +109,28 @@ const updateAnalyzingText = () => {
       console.error('Error getting signed URL:', error);
       setError('Error getting signed URL, please try again.');
       return null;
+    }
+  };
+
+  const fetchGptSuggestions = async (texts) => {
+    try {
+      const response = await fetch('/api/gpt-suggestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ texts }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch GPT suggestions');
+      }
+
+      const data = await response.json();
+      setGptSuggestions(data.suggestions);
+    } catch (error) {
+      console.error('Error fetching GPT suggestions:', error);
+      setError('Error fetching GPT suggestions, please try again.');
     }
   };
 
@@ -164,6 +188,10 @@ const updateAnalyzingText = () => {
         setCorrectedBookCount(sortedBooks.length);
         bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
 
+        // Fetch GPT suggestions
+        const textsToAnalyze = sortedBooks.map(book => book.text);
+        await fetchGptSuggestions(textsToAnalyze);
+
         // Only update Firestore if the user is logged in
         if (user) {
           // Update Firestore with new books and increment total uploads using a transaction
@@ -197,32 +225,46 @@ const updateAnalyzingText = () => {
       setIsAnalyzing(false); // Ensure to stop analyzing on error
     }
   };
-const handleRefresh = () => {
-  // Clear the file input element
-  document.querySelector('input[type="file"]').value = '';
 
-  // Revoke object URLs to free up memory
-  uploadedImages.forEach((imageUrl) => URL.revokeObjectURL(imageUrl));
-  croppedImages.forEach((image) => URL.revokeObjectURL(image.dataUrl));
+  const handleRefresh = () => {
+    // Clear the file input element
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) fileInput.value = '';
 
-  // Reset state variables
-  setSelectedFiles([]);
-  setUploadedImages([]);
-  setCroppedImages([]);
-  setExtractedTexts([]);
-  setError('');
-  setBookCount(null);
-  setCorrectedBookCount(null);
-  setUploadAttempted(false);
-  setShowFeedback(false);
-  setIsAnalyzing(false);
-  setAnalyzingText('');
-  setCropMode(false); // Reset crop mode
-  setUser(null); // Clear user information
+    // Revoke object URLs to free up memory
+    uploadedImages.forEach((imageUrl) => URL.revokeObjectURL(imageUrl));
+    croppedImages.forEach((image) => URL.revokeObjectURL(image.dataUrl));
 
-  // Optional: Perform a full page reload
-  window.location.reload();
-};
+    // Reset state variables
+    setSelectedFiles([]);
+    setUploadedImages([]);
+    setCroppedImages([]);
+    setExtractedTexts([]);
+    setGptSuggestions([]);
+    setError('');
+    setBookCount(null);
+    setCorrectedBookCount(null);
+    setUploadAttempted(false);
+    setShowFeedback(false);
+    setFeedbackSubmitted(false);
+    setIsAnalyzing(false);
+    setAnalyzingText('');
+    setCropMode(false); // Reset crop mode
+
+    // Clear user information but keep Firestore persistence
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+  };
+
+  const handleFeedbackSubmit = () => {
+    setFeedbackSubmitted(true);
+    setShowFeedback(false);
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
@@ -249,6 +291,9 @@ const handleRefresh = () => {
             <label className="text-white mr-2">Crop Mode</label>
             <input type="checkbox" checked={cropMode} onChange={() => setCropMode(!cropMode)} />
           </div>
+
+            <p className="mb-4 text-lg text-white">Reminder: Each image should only contain one level of a shelf. If you want to add more, upload additional images, or use crop mode.</p>
+
           <input
             type="file"
             accept="image/*"
@@ -283,7 +328,9 @@ const handleRefresh = () => {
               <h2 className="text-xl font-bold text-white mb-4">Uploaded Images</h2>
               {uploadedImages.map((image, index) => (
                 <div key={index} className="relative w-full mb-4">
-                  <Image src={image} alt={`Uploaded ${index + 1}`} layout="responsive" width={500} height={300} className="w-full max-h-64 object-contain rounded-lg" />
+                  <div className="image-container">
+                    <Image src={image} alt={`Uploaded ${index + 1}`} layout="responsive" width={500} height={300} className="w-full max-h-64 object-contain rounded-lg" />
+                  </div>
                   <button
                     onClick={() => handleRemoveImage(index)}
                     className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
@@ -330,12 +377,26 @@ const handleRefresh = () => {
               <label className="mr-2">Extracted Texts:</label>
               <select
                 className="text-gray-900 rounded p-1 w-full max-w-md"
-                value={correctedBookCount}
+                value={correctedBookCount !== null ? correctedBookCount : ''}
                 onChange={(e) => setCorrectedBookCount(e.target.value)}
               >
                 {extractedTexts.map((text, index) => (
                   <option key={index} value={index}>
                     {text.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mt-4">
+              <label className="mr-2">AI Suggestions:</label>
+              <select
+                className="text-gray-900 rounded p-1 w-full max-w-md"
+                value={correctedBookCount !== null ? correctedBookCount : ''}
+                onChange={(e) => setCorrectedBookCount(e.target.value)}
+              >
+                {gptSuggestions.map((suggestion, index) => (
+                  <option key={index} value={index}>
+                    {suggestion}
                   </option>
                 ))}
               </select>
@@ -364,6 +425,19 @@ const handleRefresh = () => {
                 className="ml-2 text-gray-900 rounded p-1"
               />
             </label>
+            <button
+              onClick={handleFeedbackSubmit}
+              className="btn btn-primary w-auto mt-2"
+              style={{ backgroundColor: 'green', color: '#ffffff' }}
+            >
+              Submit Feedback
+            </button>
+          </div>
+        )}
+
+        {feedbackSubmitted && (
+          <div className="w-full text-center text-xl font-bold text-white mb-4">
+            <p>Thanks for the feedback!</p>
           </div>
         )}
 
@@ -375,25 +449,18 @@ const handleRefresh = () => {
                 <div key={index} className="card shadow-md rounded-lg p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e0e7ff)' }} ref={el => bookRefs.current[index] = el}>
                   <h2 className="text-lg font-semibold mb-2 text-gray-800">Extracted Text:</h2>
                   <p className="text-gray-700">{item.text || 'No text detected'}</p>
-                  <Image
-                    src={item.image_url}
-                    alt={`Book ${index + 1}`}
-                    layout="responsive"
-                    width={500}
-                    height={300}
-                    className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Corrected text"
-                    value={item.correctedText || ''}
-                    onChange={(e) => {
-                      const newExtractedTexts = [...extractedTexts];
-                      newExtractedTexts[index].correctedText = e.target.value;
-                      setExtractedTexts(newExtractedTexts);
-                    }}
-                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg p-2 mb-2"
-                  />
+                  <div className="image-container">
+                    <Image
+                      src={item.image_url}
+                      alt={`Book ${index + 1}`}
+                      layout="responsive"
+                      width={500}
+                      height={300}
+                      className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
+                    />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800">AI Suggestion:</h3>
+                  <p className="text-gray-700">{gptSuggestions[index] || 'No suggestion'}</p>
                 </div>
               ))}
             </div>
@@ -406,14 +473,16 @@ const handleRefresh = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {croppedImages.map((image, index) => (
                 <div key={index} className="relative card shadow-md rounded-lg p-4" style={{ background: 'linear-gradient(to bottom, #f8fafc, #e0e7ff)' }}>
-                  <Image
-                    src={image.dataUrl}
-                    alt={`Cropped ${index + 1}`}
-                    layout="responsive"
-                    width={500}
-                    height={300}
-                    className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
-                  />
+                  <div className="image-container">
+                    <Image
+                      src={image.dataUrl}
+                      alt={`Cropped ${index + 1}`}
+                      layout="responsive"
+                      width={500}
+                      height={300}
+                      className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
+                    />
+                  </div>
                   <button
                     onClick={() => handleRemoveCroppedImage(index)}
                     className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"

@@ -170,7 +170,7 @@ const CollectionsPage = () => {
             </button>
           </div>
           {loading ? (
-            <p className="text-black">Loading...</p>
+            <p className="text-white">Loading...</p>
           ) : (
             <div className="w-full">
               {collections.length > 0 ? (
@@ -212,11 +212,11 @@ const CollectionsPage = () => {
                       )}
                       <select
                         onChange={(e) => handleAddBookToCollection(e.target.value, collection.id)}
-                        className="select select-bordered w-full mt-2"
+                        className="select select-bordered w-full mt-2 text-black"
                       >
-                        <option value="">Add a book to this collection</option>
+                        <option value="" className="text-black">Add a book to this collection</option>
                         {books.filter(book => !collection.books.includes(book.id)).map(book => (
-                          <option key={book.id} value={book.id}>{book.text}</option>
+                          <option key={book.id} value={book.id} className="text-black">{book.text}</option>
                         ))}
                       </select>
                     </div>

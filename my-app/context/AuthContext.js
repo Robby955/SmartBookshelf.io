@@ -1,14 +1,8 @@
+// context/AuthContext.js
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut
-} from "firebase/auth";
+import { onAuthStateChanged, getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
-// Initialize Firebase with environment variables for security
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -27,12 +21,12 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setLoading(false); // Set loading to false once auth state is known
+      setLoading(false);
     });
 
     return () => unsubscribe();

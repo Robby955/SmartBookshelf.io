@@ -61,17 +61,8 @@ const Header = () => {
                     <Link href="/examples" legacyBehavior>
                       <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Examples</a>
                     </Link>
-                    <Link href="/essay-writer" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Essay Writer</a>
-                    </Link>
-                    <Link href="/spell-checker" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Spell Checker</a>
-                    </Link>
-                    <Link href="/ai-detector" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">AI Detector</a>
-                    </Link>
-                    <Link href="/plagiarism-detector" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Plagiarism Detector</a>
+                    <Link href="/tools" legacyBehavior>
+                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Tools</a>
                     </Link>
                     <Link href="/collections" legacyBehavior>
                       <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Collections</a>
