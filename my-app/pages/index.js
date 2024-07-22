@@ -284,16 +284,16 @@ return (
           {cropMode && <li className="mb-2">Crop the areas of interest and click &quot;Add Crop&quot;. Repeat if necessary.</li>}
           <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract the text from the spine.</li>
         </ol>
-        <p className="mt-6 text-lg">For more detailed instructions, watch our tutorial video or visit the <Link href="/examples" legacyBehavior><a className="text-blue-500 underline">Examples page</a></Link>.</p>
-      </div>
+  <p className="mt-6 text-lg text-left">For more detailed instructions, watch our tutorial video or visit the <Link
+      href="/examples" legacyBehavior><a className="text-blue-500 underline">Examples page</a></Link>.</p></div>
 
-        <div className="w-full mb-6">
+      <div className="w-full mb-6">
           <div className="flex items-center mb-4">
             <label className="text-white mr-2">Crop Mode</label>
             <input type="checkbox" checked={cropMode} onChange={() => setCropMode(!cropMode)} />
           </div>
 
-            <p className="mb-4 text-lg text-white">Reminder: Each image should only contain one level of a shelf. If you want to add more, upload additional images, or use crop mode.</p>
+            <p className="mb-4 text-lg text-white">Reminder: Each image should only contain one level of a shelf.</p>
 
 
           <input

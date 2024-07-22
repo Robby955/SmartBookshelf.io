@@ -49,7 +49,8 @@ const Examples = () => {
 
           <h2 className="text-2xl font-semibold mb-4 text-white">Example 2: When to Use Crop Mode</h2>
           <p className="mb-6 text-white">
-            Use crop mode if your bookshelves have vertical levels of shelves. Cropping should ONLY be used for cropping vertical shelves, never to break up a horizontal shelf, otherwise the model could lose context for that row and get the books wrong.
+            Use crop mode only if you do not have the ability to take new photos. Cropping should only be used for cropping vertical shelves if you cannot take new photos of each shelf. Cropping can also be used to select portions of books on multiple shelves.
+            Note that cropping does result in a significant decrease of resolution and hence the model loses accuracy compared to normal mode. It is recommended to use cropping only when necessary. For the best results, instead take a high resolution photo of each level of the shelf and then upload them as a batch.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/whentousecrop.jpg')}>

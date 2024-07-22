@@ -4,13 +4,12 @@ import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import axios from 'axios';
 
-
 const EssayWriter = () => {
   const { user } = useAuth();
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState('');
-  const [minWords, setMinWords] = useState(500);
-  const [maxWords, setMaxWords] = useState(1000);
+  const [minWords, setMinWords] = useState(50);
+  const [maxWords, setMaxWords] = useState(250);
   const [style, setStyle] = useState('');
   const [essayFormat, setEssayFormat] = useState('');
   const [promptType, setPromptType] = useState('');
@@ -55,10 +54,12 @@ const EssayWriter = () => {
         customKeyword,
         userId: user.uid,
       });
+      console.log("Essay response:", response.data); // Debugging log
       setEssay(response.data.essay);
       fetchHistory(); // Update history after generating essay
     } catch (error) {
       console.error('Error generating essay:', error);
+      console.error('Response data:', error.response?.data); // Debugging log
     } finally {
       setLoading(false);
     }

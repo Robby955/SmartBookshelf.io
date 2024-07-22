@@ -294,7 +294,7 @@ const UserPage = () => {
               }}
               disabled={isAnalyzing || selectedBooks.length === 0 || selectedBooks.length > 10}
             >
-              {isAnalyzing ? 'Analyzing...' : 'Analyze with AI'}
+              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
             </button>
           </CustomTooltip>
           <CustomTooltip id="exportTooltip" message="Select books to export or select all">
