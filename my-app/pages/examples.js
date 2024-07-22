@@ -27,6 +27,17 @@ const Examples = () => {
       <div className="container mx-auto p-6 bg-gray-900 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-6">Examples</h1>
         <div className="w-full">
+          <h2 className="text-2xl font-semibold mb-4 text-white">Instructional Video</h2>
+          <p className="mb-6 text-white">
+            Watch this video to see a step-by-step guide on how to use SmartBookshelf.io.
+          </p>
+          <div className="w-full h-auto mb-4 border rounded-lg overflow-hidden">
+            <video width="100%" controls>
+              <source src="https://storage.googleapis.com/demovideos-smartshelf/siteinstructions.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
           <h2 className="text-2xl font-semibold mb-4 text-white">Example 1: Uploading a Bookshelf Image</h2>
           <p className="mb-6 text-white">
             Upload an image of your bookshelf, and our application will detect the books and extract the titles for you.
@@ -98,19 +109,35 @@ const Examples = () => {
                onClick={() => openModal('/example14.jpg')}>
             <Image src="/example14.jpg" alt="GPT assisted response" layout="responsive" width={1000} height={600} objectFit="contain"/>
           </div>
+
+          <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
+               onClick={() => openModal('/example22.jpg')}>
+            <Image src="/example22.jpg" alt="GPT corrected title" layout="responsive" width={1000} height={600} objectFit="contain"/>
+          </div>
+
+          <h2 className="text-2xl font-semibold mb-4 text-white">Cropping Example Video</h2>
+          <p className="mb-6 text-white">
+            Watch this video to see how to crop and select specific sections of a bookcase.
+          </p>
+          <div className="w-full h-auto mb-4 border rounded-lg overflow-hidden">
+            <video width="100%" controls>
+              <source src="https://storage.googleapis.com/demovideos-smartshelf/cropexample.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
       </div>
 
       <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Example Image"
-          className="flex items-center justify-center h-full"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-75"
-          style={{
-            overlay: {backgroundColor: 'rgba(0, 0, 0, 0.75)'},
-            content: {border: 'none', background: 'none', padding: 'none'}
-          }}
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Image"
+        className="flex items-center justify-center h-full"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-75"
+        style={{
+          overlay: {backgroundColor: 'rgba(0, 0, 0, 0.75)'},
+          content: {border: 'none', background: 'none', padding: 'none'}
+        }}
       >
         <div className="relative w-full max-w-4xl h-auto">
           <Image src={modalImage} alt="Example" layout="responsive" width={1000} height={800} objectFit="contain" />

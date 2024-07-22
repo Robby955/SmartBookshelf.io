@@ -5,7 +5,7 @@ import { doc, collection, runTransaction } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import MultiCrop from '../components/MultiCrop';
 import { db, auth } from '../lib/firebaseClient';
-
+import Link from 'next/link';
 
 export default function Home() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -266,25 +266,26 @@ export default function Home() {
     setShowFeedback(false);
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
-      <Head>
-        <title>SmartBookshelf.io</title>
-        <meta name="description" content="Upload a book image and extract text" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Head>
+return (
+  <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
+    <Head>
+      <title>SmartBookshelf.io</title>
+      <meta name="description" content="Upload a book image and extract text" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </Head>
 
-      <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
-        <div className="text-white mb-8 text-center">
-          <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
-          <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
-          <ol className="list-decimal list-inside text-left text-lg">
-            <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
-            <li className="mb-2">Select one or more photos of your bookshelves (one photo per shelf) or take new ones.</li>
-            {cropMode && <li className="mb-2">Crop the areas of interest and click &quot;Add Crop&quot;. Repeat if necessary.</li>}
-            <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract the text from the spine.</li>
-          </ol>
-        </div>
+    <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
+      <div className="text-white mb-8 text-center">
+        <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
+        <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
+        <ol className="list-decimal list-inside text-left text-lg">
+          <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
+          <li className="mb-2">Select one or more photos of your bookshelves (one photo per shelf) or take new ones.</li>
+          {cropMode && <li className="mb-2">Crop the areas of interest and click &quot;Add Crop&quot;. Repeat if necessary.</li>}
+          <li className="mb-2">Click &quot;Upload&quot; to analyze the images and extract the text from the spine.</li>
+        </ol>
+        <p className="mt-6 text-lg">For more detailed instructions, watch our tutorial video or visit the <Link href="/examples" legacyBehavior><a className="text-blue-500 underline">Examples page</a></Link>.</p>
+      </div>
 
         <div className="w-full mb-6">
           <div className="flex items-center mb-4">
@@ -293,6 +294,7 @@ export default function Home() {
           </div>
 
             <p className="mb-4 text-lg text-white">Reminder: Each image should only contain one level of a shelf. If you want to add more, upload additional images, or use crop mode.</p>
+
 
           <input
             type="file"
@@ -417,7 +419,7 @@ export default function Home() {
         {showFeedback && (
           <div className="w-full text-center text-xl font-bold text-white mb-4">
             <label>
-              Correct # of Books Detected:
+              Correct # of Books?:
               <input
                 type="number"
                 value={correctedBookCount}
