@@ -1,13 +1,17 @@
-# ShelfValue.io
+# SmartBookShelf.io
 
-ShelfValue.io is an innovative application designed to automate the process of cataloging books from images of bookshelves. Utilizing state-of-the-art machine learning models for object detection and OCR (Optical Character Recognition), SmartShelf.io identifies books, extracts text from their spines or covers, and retrieves detailed information about each book from an external book database.
+**Welcome!**
+
+![landing-page](my-app/public/welcome.png)
+
+SmartBookshelf.io is an innovative application designed to automate the process of cataloging books from images of bookshelves. Utilizing machine learning models for object detection and OCR (Optical Character Recognition), SmartBookshelf.io identifies books, extracts text from their spines or , and retrieves detailed information about each book from an external book database and assistance from a Large Language model.
 
 ## Features
 
 1. **Book Detection**: Uses the YOLOv5 object detection model to identify and locate books within an image of a bookshelf.
 2. **Text Extraction**: Employs Google Cloud Vision API to perform OCR on the detected book regions, extracting relevant text such as titles and authors.
-3. **Book Information Retrieval**: Queries an external book API using the extracted text to fetch detailed book information, including title, author, and publication year.
-4. **Visualization**: Displays the original image with bounding boxes around detected books, along with the extracted text and book information.
+3. **Book Information Retrieval**: Queries an external LLM API using the extracted text to fetch detailed book information and attempt to match to the least likely book.
+4. **Visualization**: Displays the cropped detected books, along with the extracted text and book information.
 5. **Cropped Images**: Saves cropped images of detected books for further processing or verification.
 
 ## Installation
@@ -16,7 +20,7 @@ ShelfValue.io is an innovative application designed to automate the process of c
 
 - Python 3.12
 - Google Cloud Vision API credentials
-- MongoDB
+- Firestore Database
 - [Tesseract-OCR](https://github.com/tesseract-ocr/tesseract)
 
 ### Setup
@@ -79,7 +83,7 @@ ShelfValue.io is an innovative application designed to automate the process of c
 SmartShelf.io is designed to be deployed on Google Cloud using various Google Cloud services for seamless scalability and integration. The application uses:
 - **Google Cloud Run** for serverless deployment of the application.
 - **Google Cloud Vision API** for OCR capabilities.
-- **MongoDB Atlas** for cloud database services.
+
 
 ### Deployment Steps
 
