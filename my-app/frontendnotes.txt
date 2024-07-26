@@ -1,6 +1,0 @@
-
-2024/07/10:
-
-docker build -t gcr.io/smartshelf-426516/smartbookshelf-frontend-v2.9 .
-docker push gcr.io/smartshelf-426516/smartbookshelf-frontend-v2.9
-gcloud run deploy smartbookshelf-frontend --image gcr.io/smartshelf-426516/smartbookshelf-frontend-v2.9 --platform managed --region northamerica-northeast1 --allow-unauthenticated --memory 2Gi --min-instances 1
