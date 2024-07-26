@@ -4,7 +4,7 @@
 
 ![landing-page](my-app/public/welcome.png)
 
-SmartBookshelf.io is an innovative application designed to automate the process of cataloging books from images of bookshelves. Utilizing machine learning models for object detection and OCR (Optical Character Recognition), SmartBookshelf.io identifies books, extracts text from their spines or , and retrieves detailed information about each book from an external book database and assistance from a Large Language model.
+SmartBookshelf.io is an innovative application designed to automate the process of cataloging books from images of bookshelves. Utilizing machine learning models for object detection and OCR (Optical Character Recognition), SmartBookshelf.io identifies books, extracts text from their spines, and retrieves detailed information about each book from an external book database and assistance from a Large Language model.
 
 ## Features
 
@@ -28,7 +28,7 @@ SmartBookshelf.io is an innovative application designed to automate the process 
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/yourusername/SmartBookshelf.io.git
-    cd SmartShelf.io
+    cd SmartBookshelf.io
     ```
 
 2. **Create a virtual environment**:
@@ -43,12 +43,43 @@ SmartBookshelf.io is an innovative application designed to automate the process 
     ```
 
 4. **Set up Google Cloud Vision API**:
-    - Download your `credentials.json` file from Google Cloud Console.
-    - Set the environment variable for Google Application Credentials:
+    - **Enable the API**: 
+      - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+      - Create a new project or select an existing project.
+      - Enable the Google Cloud Vision API for your project.
+    - **Create a Service Account**: 
+      - Navigate to **IAM & Admin** > **Service Accounts**.
+      - Click **Create Service Account**.
+      - Provide a name and description for the service account.
+      - Assign the role **Project** > **Editor** and **Viewer**.
+      - Click **Done**.
+    - **Generate the Key**:
+      - After creating the service account, click on it to open its details.
+      - Navigate to the **Keys** tab and click **Add Key** > **Create new key**.
+      - Select **JSON** and click **Create**. A JSON file will be downloaded to your computer. This is your `credentials.json` file.
+    - **Place the `credentials.json` file**:
+      - Move the downloaded `credentials.json` file to the `backend/scripts` directory of your project.
+    - **Set the environment variable for Google Application Credentials**:
         ```bash
-        export GOOGLE_APPLICATION_CREDENTIALS="path/to/your/credentials.json"
-        # On Windows use `set GOOGLE_APPLICATION_CREDENTIALS=path\to\your\credentials.json`
+        export GOOGLE_APPLICATION_CREDENTIALS="backend/scripts/credentials.json"
+        # On Windows use `set GOOGLE_APPLICATION_CREDENTIALS=backend\scripts\credentials.json`
         ```
+    - **Example of a `credentials.json` file**:
+      ```json
+      {
+        "type": "service_account",
+        "project_id": "smartshelf-426516",
+        "private_key_id": "replace_with_private_key_id",
+        "private_key": "replace_with_private_key",
+        "client_email": "vision-api-sa@smartshelf-426516.iam.gserviceaccount.com",
+        "client_id": "108005887996655358330",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vision-api-sa%40smartshelf-426516.iam.gserviceaccount.com",
+        "universe_domain": "googleapis.com"
+      }
+      ```
 
 5. **Install Tesseract-OCR**:
     - Download and install Tesseract-OCR from [here](https://github.com/tesseract-ocr/tesseract).
@@ -60,16 +91,14 @@ SmartBookshelf.io is an innovative application designed to automate the process 
 
 1. **Run the script**:
     ```bash
-    python backend/book_bounds.py
+    python backend/scripts/extract_books.py
     ```
 
-2. **Upload an image of a bookshelf**:
-    - The script will detect books, save cropped images of each book, and extract text from these images.
-
-3. **View results**:
+2. **View results**:
+    - The script will process the `IMG_6464.jpeg` image located in the `backend/scripts/test_images` directory.
     - The original image with bounding boxes around detected books will be displayed.
     - Cropped images and extracted text will be saved and printed in the console.
-    - The script will query the book API with the extracted text and print the top 3 best matches for each detected book.
+    - Combined images with detected text will be saved in the `cropped_books` directory.
 
 ## Example
 
@@ -77,13 +106,11 @@ SmartBookshelf.io is an innovative application designed to automate the process 
 
 ![Detected Books](my-app/public/examplemain.jpg)
 
-
 ## Deployment
 
-SmartShelf.io is designed to be deployed on Google Cloud using various Google Cloud services for seamless scalability and integration. The application uses:
+SmartBookshelf.io is designed to be deployed on Google Cloud using various Google Cloud services for seamless scalability and integration. The application uses:
 - **Google Cloud Run** for serverless deployment of the application.
 - **Google Cloud Vision API** for OCR capabilities.
-
 
 ### Deployment Steps
 
@@ -105,5 +132,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
+This project is licensed under the MIT License.
