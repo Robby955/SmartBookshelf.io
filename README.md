@@ -27,7 +27,7 @@ SmartBookshelf.io is an innovative application designed to automate the process 
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/SmartShelf.io.git
+    git clone https://github.com/yourusername/SmartBookshelf.io.git
     cd SmartShelf.io
     ```
 
@@ -97,7 +97,7 @@ SmartShelf.io is designed to be deployed on Google Cloud using various Google Cl
     gcloud run deploy smartshelf --image gcr.io/your-project-id/smartshelf --platform managed --region your-region --allow-unauthenticated
     ```
 
-3. **Set environment variables** for Google Cloud Vision API credentials and MongoDB URI in Google Cloud Run.
+3. **Set environment variables** for Google Cloud Vision API credentials in Google Cloud Run.
 
 ## Contributing
 
