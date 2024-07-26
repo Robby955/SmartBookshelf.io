@@ -2,10 +2,17 @@
 .venv/
 venv/
 .next/
+
+# Ignore root-specific files
 /requirements.txt
 /notes.txt
 /package-lock.json
 /yolov5s.pt
+/key.json
+
+# Ignore .idea directory
+.idea/
+
 # Ignore node_modules directory
 node_modules/
 
@@ -16,24 +23,29 @@ uploads/
 *.pyc
 __pycache__/
 
+# Ignore combined and cropped books directories
+combined_images/
+cropped_books/
+
 # Ignore log files
 *.log
 
 # Ignore environment variables
 credentials.json
+key.json
 
 # Ignore frontend build directory
 my-app/build/
 my-app/node_modules/
+my-app/functions/
+my-app/firebase*
+my-app/.firebaserc
+my-app/firestore.rules
+my-app/next.config.js
+my-app/next.config.mjs
+my-app/middleware
+my-app/context
 
-# Ignore backend specific files
-*.pyc
-__pycache__/
-cropped_books
-key.json
-notes.txt
+
+# Ignore backend-specific files
 backend/scripts/test_mongodb_connection.py
-
-notes.txt
-package.json
-yolov5s.pt

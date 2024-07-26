@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "cropperjs": "^1.6.2",
+    "firebase-admin": "^12.2.0",
+    "react-cropper": "^2.3.3"
+  }
+}
