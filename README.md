@@ -1,4 +1,4 @@
-# SmartBookShelf.io
+# SmartBookshelf.io
 
 **Welcome!**
 
