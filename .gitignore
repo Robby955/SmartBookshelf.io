@@ -2,8 +2,10 @@
 .venv/
 venv/
 .next/
-
-
+/requirements.txt
+/notes.txt
+/package-lock.json
+/yolov5s.pt
 # Ignore node_modules directory
 node_modules/
 
