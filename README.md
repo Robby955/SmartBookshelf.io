@@ -71,13 +71,7 @@ ShelfValue.io is an innovative application designed to automate the process of c
 
 **Example image of a bookshelf:**
 
-![Detected Books](path/to/detected_books.jpg)
-
-**Detected and Cropped Book:**
-
-![Cropped Book](path/to/cropped_books/book_0.jpg)
-
-**Extracted Text:**
+![Detected Books](my-app/public/examplemain.jpg)
 
 
 ## Deployment
