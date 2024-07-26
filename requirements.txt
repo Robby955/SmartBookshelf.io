@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pymongo
-uvicorn
-google-cloud-storage
-google-cloud-vision
-torch
-torchvision
-opencv-python-headless
