@@ -160,7 +160,7 @@ def detect_books(image_path, save_path='detected_books.jpg'):
     print("Detections:")
 
     # Create a directory for saving cropped images
-    cropped_dir = "cropped_books"
+    cropped_dir = "../cropped_books"
     if not os.path.exists(cropped_dir):
         os.makedirs(cropped_dir)
 

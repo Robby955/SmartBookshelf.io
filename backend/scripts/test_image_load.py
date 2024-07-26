@@ -76,7 +76,7 @@ def detect_books(image_path, save_path='detected_books.jpg', nms_thresh=0.3, con
     print(f"Number of detections after NMS: {len(nms_boxes)}")
     print(f"NMS Results: {nms_boxes}")
 
-    cropped_dir = "cropped_books"
+    cropped_dir = "../cropped_books"
     if not os.path.exists(cropped_dir):
         os.makedirs(cropped_dir)
 

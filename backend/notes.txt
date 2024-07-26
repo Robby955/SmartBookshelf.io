@@ -1,3 +1,20 @@
+
+To start the server:
+
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf> cd backend
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> waitress-serve --host=0.0.0.0 --port=8000 app:app
+
+Then do
+
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf> cd my-app
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\my-app> npm run dev
+
+
+
+
+
+
+
 Ideal training would be on say 10,000 spines for which we had associated extracted key words from this would then allow us to learn the extraction algorithm as good as possible.
 
 So the training/test data would be text input (the extraction of the spine text) and then keywords: Authors and Title keywords
@@ -86,3 +103,55 @@ docker push gcr.io/smartshelf-426516/smartbookshelf-backend-v1.8
 gcloud run deploy smartbookshelf-backend --image gcr.io/smartshelf-426516/smartbookshelf-backend-v1.8 --platform managed --region northamerica-northeast1 --allow-unauthenticated --memory 4Gi --cpu 2 --min-instances 1
 
 To start the server; (.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> waitress-serve --host=0.0.0.0 --port=8080 app:app
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> docker build -t gcr.io/smartshelf-426516/smartbookshelf-backend-v3.2 .
+[+] Building 0.8s (11/11) FINISHED                                                                                                                                                                                                                                                                   docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                                                                                                                           0.0s
+ => => transferring dockerfile: 557B                                                                                                                                                                                                                                                                           0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim                                                                                                                                                                                                                                            0.0s
+ => [internal] load .dockerignore                                                                                                                                                                                                                                                                              0.0s
+ => => transferring context: 2B                                                                                                                                                                                                                                                                                0.0s
+ => [internal] load build context                                                                                                                                                                                                                                                                              0.0s
+ => => transferring context: 32.60kB                                                                                                                                                                                                                                                                           0.0s
+ => [1/6] FROM docker.io/library/python:3.12-slim                                                                                                                                                                                                                                                              0.0s
+ => CACHED [2/6] WORKDIR /app                                                                                                                                                                                                                                                                                  0.0s
+ => CACHED [3/6] COPY requirements.txt .                                                                                                                                                                                                                                                                       0.0s
+ => CACHED [4/6] RUN pip install --no-cache-dir -r requirements.txt                                                                                                                                                                                                                                            0.0s
+ => CACHED [5/6] RUN pip install waitress                                                                                                                                                                                                                                                                      0.0s
+ => [6/6] COPY . .                                                                                                                                                                                                                                                                                             0.5s
+ => exporting to image                                                                                                                                                                                                                                                                                         0.1s
+ => => exporting layers                                                                                                                                                                                                                                                                                        0.1s
+ => => writing image sha256:ab27b9f645639c93710a0898e5a27ccbe5c8e6dd4e35a11b0b010c09b2b28a36                                                                                                                                                                                                                   0.0s
+ => => naming to gcr.io/smartshelf-426516/smartbookshelf-backend-v3.2                                                                                                                                                                                                                                          0.0s
+
+View build details: docker-desktop://dashboard/build/default/default/jcmwljsnemj33pq30jdjl1qng
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> docker push gcr.io/smartshelf-426516/smartbookshelf-backend-3.2
+Using default tag: latest
+The push refers to repository [gcr.io/smartshelf-426516/smartbookshelf-backend-3.2]
+An image does not exist locally with the tag: gcr.io/smartshelf-426516/smartbookshelf-backend-3.2
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> docker push gcr.io/smartshelf-426516/smartbookshelf-backend-v3.2
+Using default tag: latest
+The push refers to repository [gcr.io/smartshelf-426516/smartbookshelf-backend-v3.2]
+d7b799df4286: Pushed
+d55b55bc4313: Layer already exists
+b3ec801c0712: Layer already exists
+a0d8c2d10404: Layer already exists
+28aec04addd7: Layer already exists
+4bbb80f01293: Layer already exists
+1c8df5403ed1: Layer already exists
+315f904f4c0d: Layer already exists
+c8f253aef560: Layer already exists
+a483da8ab3e9: Layer already exists
+latest: digest: sha256:00fd31d2deac0926d338a58fba8c6c0ebce288f6255f748b34a3bceade6dbab7 size: 2416
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend> gcloud run deploy smartbookshelf-backend --image gcr.io/smartshelf-426516/smartbookshelf-backend-v3.2 --platform managed --region northamerica-northeast1 --allow-unauthenticated --memory 4Gi --cpu 2 --min-instances 1
+Deploying container to Cloud Run service [smartbookshelf-backend] in project [smartshelf-426516] region [northamerica-northeast1]
+OK Deploying... Done.
+  OK Creating Revision...
+  OK Routing traffic...
+  OK Setting IAM Policy...
+Done.
+Service [smartbookshelf-backend] revision [smartbookshelf-backend-00030-kts] has been deployed and is serving 100 percent of traffic.
+Service URL: https://smartbookshelf-backend-vnbmdiupba-nn.a.run.app
+(.venv) PS C:\Users\robby\PycharmProjects\SmartShelf\backend>

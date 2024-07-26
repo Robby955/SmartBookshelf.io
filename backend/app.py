@@ -15,6 +15,7 @@ from PIL import Image
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from google.oauth2 import service_account
+import asyncio
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate("credentials.json")
@@ -54,10 +55,9 @@ def clean_text(text):
 # Initialize Flask-Limiter
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["2000 per day", "500 per hour"]
 )
 limiter.init_app(app)
-
 
 @app.route('/get-signed-url', methods=['GET'])
 def get_signed_url():
@@ -85,7 +85,6 @@ def get_signed_url():
         logger.error(traceback.format_exc())
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/routes', methods=['GET'])
 def list_routes():
     import urllib
@@ -96,10 +95,27 @@ def list_routes():
         output.append(line)
     return jsonify(output)
 
+async def process_image(file):
+    try:
+        contents = file.read()
+        logger.debug(f"Processing file: {file.filename}")
+
+        # Read image with OpenCV
+        img = cv2.imdecode(np.frombuffer(contents, np.uint8), cv2.IMREAD_COLOR)
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        # Perform detection
+        results = model(img_rgb)
+
+        return results.pandas().xyxy[0].to_numpy(), contents, img_rgb
+    except Exception as e:
+        logger.error("Error processing image: %s", e)
+        logger.error(traceback.format_exc())
+        return None, None, None
 
 @app.route("/upload/", methods=["POST"])
-@limiter.limit("200 per day; 50 per hour")
-def upload_book():
+@limiter.limit("3000 per day; 1000 per hour")
+async def upload_book():
     try:
         files = request.files.getlist("files")
         user_id = request.form.get('userID')
@@ -107,42 +123,20 @@ def upload_book():
         if not files:
             raise ValueError("No files provided")
 
-        logger.debug(f"Number of files received: {len(files)}, user_id: {user_id}")
+        tasks = [process_image(file) for file in files]
+        results_list = await asyncio.gather(*tasks)
 
-        total_books_detected = 0
         extracted_texts = []
+        total_books_detected = 0
 
-        for file in files:
-            contents = file.read()
-            logger.debug(f"Processing file: {file.filename}")
-
-            # Save uploaded image to Google Cloud Storage
-            blob = bucket.blob(file.filename)
-            blob.upload_from_string(contents, content_type=file.content_type)
-            uploaded_image_url = blob.public_url
-            logger.debug(f"Image uploaded to {uploaded_image_url}")
-
-            # Read image with OpenCV
-            img = cv2.imdecode(np.frombuffer(contents, np.uint8), cv2.IMREAD_COLOR)
-            if img is None:
-                raise ValueError("Failed to decode image")
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            logger.debug("Image read and converted to RGB")
-
-            # Perform detection
-            results = model(img_rgb)
-            logger.debug("Detection performed")
-
-            # Convert results to numpy array
-            results_np = results.pandas().xyxy[0].to_numpy()
-            logger.debug(f"Detection results: {results_np}")
+        for results_np, contents, img_rgb in results_list:
+            if results_np is None or contents is None or img_rgb is None:
+                return jsonify({"error": "Error preprocessing image, please try again."}), 500
 
             for detection in results_np:
                 x1, y1, x2, y2, confidence, class_id, class_name = detection
-
                 if class_name == 'book':
                     book_img = img_rgb[int(y1):int(y2), int(x1):int(x2)]
-                    book_img = resize_image(book_img)
                     _, encoded_image = cv2.imencode('.jpg', book_img)
                     content = encoded_image.tobytes()
 
@@ -150,7 +144,6 @@ def upload_book():
                     book_blob = bucket.blob(f"cropped_books/book_{x1}_{y1}_{x2}_{y2}.jpg")
                     book_blob.upload_from_string(content, content_type='image/jpeg')
                     book_img_url = book_blob.name
-                    logger.debug(f"Book image uploaded to {book_img_url}")
 
                     image = vision.Image(content=content)
                     response = vision_client.text_detection(image=image)
@@ -163,20 +156,16 @@ def upload_book():
                             "image_url": book_img_url,
                             "coordinates": {"x1": x1, "y1": y1, "x2": x2, "y2": y2}
                         })
-                        logger.debug(f"Extracted text: {cleaned_text}")
 
-                        # Save to Firestore
-                        doc_ref = db.collection('uploads').document()
-                        doc_ref.set({
-                            'imageURL': book_img_url,
-                            'text': cleaned_text,
-                            'userId': user_id
-                        })
-                        logger.debug(f"Saved to Firestore: {cleaned_text}")
+                        if user_id:
+                            doc_ref = db.collection('uploads').document()
+                            doc_ref.set({
+                                'imageURL': book_img_url,
+                                'text': cleaned_text,
+                                'userId': user_id
+                            })
 
             total_books_detected += len([d for d in results_np if d[5] == 'book'])
-
-        logger.debug(f"Total books detected: {total_books_detected}")
 
         if user_id:
             user_doc_ref = db.collection('users').document(user_id)
@@ -184,15 +173,9 @@ def upload_book():
             if user_doc.exists:
                 current_total_books = user_doc.to_dict().get('total_books', 0)
                 new_total_books = current_total_books + total_books_detected
-                user_doc_ref.update({
-                    'total_books': new_total_books
-                })
-                logger.debug(f"Updated user document for user_id: {user_id} with total_books: {new_total_books}")
+                user_doc_ref.update({'total_books': new_total_books})
             else:
                 user_doc_ref.set({'total_books': total_books_detected})
-                logger.debug(f"Created new user document for user_id: {user_id} with total_books: {total_books_detected}")
-
-        logger.debug(f"Extracted texts: {extracted_texts}")
 
         return jsonify({"extracted_texts": extracted_texts})
     except Exception as e:

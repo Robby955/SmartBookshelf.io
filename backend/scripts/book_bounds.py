@@ -140,7 +140,7 @@ def detect_books(image_path, save_path='detected_books.jpg'):
     print("Detections:")
 
     # Create a directory for saving cropped images
-    cropped_dir = "cropped_books"
+    cropped_dir = "../cropped_books"
     if not os.path.exists(cropped_dir):
         os.makedirs(cropped_dir)
 
@@ -213,7 +213,7 @@ def detect_books(image_path, save_path='detected_books.jpg'):
     return extracted_texts
 
 # Test the function
-extracted_texts = detect_books('IMG_6485.jpeg')
+extracted_texts = detect_books('../test_images/IMG_6485.jpeg')
 
 for text in extracted_texts:
     test_extraction_and_search(text)
