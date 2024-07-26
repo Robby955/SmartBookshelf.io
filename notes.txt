@@ -49,3 +49,4 @@ OK Deploying... Done.
 Done.
 Service [smartbookshelf] revision [smartbookshelf-00006-6h5] has been deployed and is serving 100 percent of traffic.
 Service URL: https://smartbookshelf-ekuhp42wva-uc.a.run.app
+

@@ -38,6 +38,12 @@ const Header = () => {
           <Link href="/about" legacyBehavior>
             <a className="text-white">About</a>
           </Link>
+          <Link href="/examples" legacyBehavior>
+            <a className="text-white">Examples</a>
+          </Link>
+          <Link href="/tools" legacyBehavior>
+            <a className="text-white">Tools</a>
+          </Link>
           {user ? (
             <>
               <Link href="/user" legacyBehavior>
@@ -58,12 +64,6 @@ const Header = () => {
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link href="/examples" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Examples</a>
-                    </Link>
-                    <Link href="/tools" legacyBehavior>
-                      <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Tools</a>
-                    </Link>
                     <Link href="/collections" legacyBehavior>
                       <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Collections</a>
                     </Link>

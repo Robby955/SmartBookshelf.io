@@ -280,15 +280,15 @@ const UserPage = () => {
               className="btn btn-success"
               style={{
                 paddingTop: '5px',
-                paddingRight: '10px',
+                paddingRight: '5px',
                 paddingBottom: '5px',
                 paddingLeft: '10px',
-                borderRadius: '5px',
-                fontSize: '16px',
+                borderRadius: '3px',
+                fontSize: '15px',
                 fontWeight: 'bold',
                 textAlign: 'center',
                 display: 'block',
-                width: '150px',
+                width: '100px',
                 height: '30px',
                 color: 'white'
               }}
