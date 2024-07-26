@@ -27,11 +27,11 @@ my-app/build/
 my-app/node_modules/
 
 # Ignore backend specific files
-backend/*.pyc
-backend/__pycache__/
-backend/cropped_books
-backend/key.json
-backend/notes.txt
+*.pyc
+__pycache__/
+cropped_books
+key.json
+notes.txt
 backend/scripts/test_mongodb_connection.py
 
 notes.txt
