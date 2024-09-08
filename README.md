@@ -6,6 +6,7 @@
 
 SmartBookshelf.io is an innovative application designed to automate the process of cataloging books from images of bookshelves. Utilizing machine learning models for object detection and OCR (Optical Character Recognition), SmartBookshelf.io identifies books, extracts text from their spines, and retrieves detailed information about each book from an external book database and assistance from a Large Language model.
 
+Access it at https://SmartBookshelf.io or click [here](https://SmartBookshelf.io), or if the custom domain is no longer avaliable, you can reach the application via my direct Flask link [here](https://smartbookshelf-frontend-225660300624.northamerica-northeast1.run.app/)
 ## Features
 
 1. **Book Detection**: Uses the YOLOv5 object detection model to identify and locate books within an image of a bookshelf.
