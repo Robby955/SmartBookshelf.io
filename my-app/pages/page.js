@@ -9,6 +9,7 @@ export default function Home() {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [extractedTexts, setExtractedTexts] = useState([]);
     const [error, setError] = useState('');
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -22,7 +23,7 @@ export default function Home() {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post('http://localhost:8000/upload/', formData, {
+            const response = await axios.post(`${backendUrl}/upload/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -65,7 +66,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {extractedTexts.map((item, index) => (
                         <div key={index} className="bg-white shadow-md rounded-lg p-4">
-                            <Image src={`http://localhost:8000/${item.image_path}`} alt={`Book ${index + 1}`} width={200} height={300} className="mb-4 rounded-lg" />
+                            <Image src={`${backendUrl}/${item.image_path}`} alt={`Book ${index + 1}`} width={200} height={300} className="mb-4 rounded-lg" />
                             <h2 className="text-lg font-semibold mb-2">Extracted Text:</h2>
                             <p className="text-gray-700">{item.text || 'No text detected'}</p>
                         </div>

@@ -1,4 +1,3 @@
-// File: C:\Users\robby\PycharmProjects\SmartShelf\my-app\app\layout.js
 import { Inter } from "next/font/google";
 import "../styles/globals.css"; // Update this path to point to the correct location
 

@@ -1,8 +1,9 @@
 import firebase_admin
 from firebase_admin import credentials, auth
+import os
 
-# Ensure this path is correct
-cred = credentials.Certificate('./firebase-adminsdk-tnq7v@smartshelf-426516.iam.gserviceaccount.com.json')
+credentials_path = os.environ.get('FIREBASE_ADMIN_CREDENTIALS', './credentials.json')
+cred = credentials.Certificate(credentials_path)
 firebase_admin.initialize_app(cred)
 
 email = input("Enter the email of the user to make admin: ")

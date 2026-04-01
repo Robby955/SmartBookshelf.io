@@ -8,6 +8,7 @@ export default function Home() {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [extractedTexts, setExtractedTexts] = useState([]);
     const [error, setError] = useState(null);
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -21,7 +22,7 @@ export default function Home() {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post('http://localhost:8000/upload/', formData, {
+            const response = await axios.post(`${backendUrl}/upload/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

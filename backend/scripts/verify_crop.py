@@ -23,7 +23,7 @@ def draw_crop_rectangle(image, crop_coordinates, color=(0, 255, 0), thickness=2)
     return image_with_rectangle
 
 # Example usage
-image_path = '../test_images/IMG_7_3.jpg'
+image_path = '../test_images/IMG_6464.jpeg'
 crop_coordinates = (50, 50, 400, 300)  # Example coordinates (x, y, width, height)
 
 # Full image

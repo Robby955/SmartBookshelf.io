@@ -204,21 +204,11 @@ def hyperparameter_search(images_info, conf_thresh_range, nms_thresh_range):
 
 # Define the images and their expected book counts
 images_info = {
-    'IMG_6484.jpg': 27,
-    'IMG_6400.jpg': 9,
+    'IMG_6484.jpg': 24,
     'IMG_6335.jpg': 5,
     'IMG_6404.jpeg': 4,
-    'IMG_6496.jpeg': 7,
-    'IMG_6497.jpeg': 24,
-    'IMG_6321.jpeg': 14,
-    'IMG_6495.jpeg': 9,
-    'IMG_6498.jpeg': 33,
-    'IMG_6499.jpeg': 51,
-    'IMG_6512.jpeg':7,
-    'IMG_6507.jpeg':13,
-    'IMG_6511.jpeg':5,
-    'IMG_6510:jpeg':10
-
+    'IMG_6464.jpeg': 7,
+    'IMG_6485.jpeg': 16,
 }
 
 # Define the range for hyperparameters
