@@ -1,64 +1,69 @@
 # SmartBookshelf.io
 
-**Automated book cataloging from bookshelf photos using object detection, OCR, and LLM-based matching.**
+Automated book cataloging from bookshelf photos using detection, OCR, and model-assisted cleanup.
 
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://docker.com)
-[![GCP](https://img.shields.io/badge/GCP-Cloud%20Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com)
-[![Live](https://img.shields.io/badge/Live-SmartBookshelf.io-00C853)](https://smartbookshelf.io)
+[Live site](https://www.smartbookshelf.io)  
+[Current frontend source](https://github.com/Robby955/SmartBookshelfV3)  
+[Demo video](https://www.youtube.com/watch?v=bgk3Jo_8e00)
 
-![Welcome](my-app/public/welcome.png)
+![Welcome](images/welcome.png)
 
-## How It Works
+## What this repo is
+
+This public repository is the technical/archive view of SmartBookshelf.
+
+- `backend/` contains the earlier Python backend and detection/OCR experiments
+- `my-app/` contains the older frontend/prototype app
+- the current polished live frontend is maintained in `SmartBookshelfV3`
+
+If you want the production-facing UI source, use the `SmartBookshelfV3` repository. If you want to understand the earlier pipeline and experiments, this repo is the useful one.
+
+## Core idea
+
+SmartBookshelf takes a real shelf photo and turns it into a reviewable digital catalog.
+
+The pipeline is built around a hard input: narrow vertical book spines with partial text, glare, overlap, and messy shelf conditions.
+
+## Pipeline overview
 
 ```
-Bookshelf Photo → YOLOv5 Detection → Per-Book Crop → Cloud Vision OCR → LLM Matching → Cataloged Results
+Bookshelf Photo -> Detection -> Per-book crop -> OCR -> Matching / cleanup -> Cataloged results
 ```
 
-1. User uploads a bookshelf photo.
-2. **YOLOv5** detects and localizes individual book spines with bounding boxes. An **SSD model** handles secondary image cropping for tightly framed extractions.
-3. Each cropped spine is sent to **Google Cloud Vision API** for OCR text extraction.
-4. Extracted text (often noisy, partial, or misspelled) is passed to an **LLM** that resolves fragments into structured book metadata (title, author).
-5. Results are returned with confidence indicators. User corrections are captured and stored alongside image metadata, building a labeled dataset for future model improvement.
+From the public code in this repo, the earlier backend stack includes:
+
+- YOLOv5-based book detection
+- per-book image crops
+- Google Cloud Vision OCR
+- metadata lookup and matching helpers
+
+The current deployed backend appears to be newer than the older `backend/app.py` in this repo and now returns enriched structured data such as title, author, genre, and summaries.
+
+## Why this project is interesting
+
+Bookshelf OCR is much harder than normal document OCR:
+
+- spines are thin and often partially blocked
+- text is vertical, curved, stylized, or low contrast
+- shelf photos are sensitive to lighting and angle
+- OCR fragments often need cleanup before they resemble real books
+
+That is why the system works better as a pipeline than as a single-step OCR demo.
+
+## Public assets
+
+The root image links now work again:
+
+- [Welcome screenshot](images/welcome.png)
+- [Results screenshot](images/resultspage.png)
 
 ![Results](images/resultspage.png)
 
-## Why This Is Hard
+## Repositories
 
-Book spine OCR is a significantly harder problem than standard document OCR:
+- Production/live frontend: [Robby955/SmartBookshelfV3](https://github.com/Robby955/SmartBookshelfV3)
+- Public technical/archive repo: [Robby955/SmartBookshelf.io](https://github.com/Robby955/SmartBookshelf.io)
 
-- **Thin, vertical text** -- spines are narrow; characters are compressed and often rotated 90 degrees.
-- **Artistic and variable fonts** -- publishers use decorative typefaces that break standard OCR assumptions.
-- **Partial occlusion** -- books overlap, lean, or are obscured by neighboring volumes.
-- **Uneven lighting and curvature** -- shelf shadows and spine curvature distort character geometry.
-- **No standardized layout** -- unlike barcodes or license plates, spine text has no predictable structure.
+## Live verification note
 
-A single-model approach fails here. The hybrid pipeline (detection → OCR → LLM) handles each failure mode at the appropriate stage.
-
-## Key Technical Decisions
-
-| Decision | Rationale |
-|---|---|
-| **YOLOv5 for detection** | Real-time inference speed with strong small-object performance. Single-stage architecture keeps the pipeline latency low enough for interactive use. |
-| **OCR + LLM hybrid** | Raw OCR output from book spines is frequently garbled. The LLM acts as a fuzzy matching layer -- resolving partial titles, correcting OCR artifacts, and disambiguating editions against known book data. Neither layer alone is sufficient. |
-| **Feedback collection** | User corrections on misidentified books are captured and stored with metadata. Each correction becomes a labeled training sample, building a growing dataset for iterative model improvement. |
-| **SSD secondary crop** | YOLOv5 bounding boxes can include background noise. A secondary SSD pass produces tighter crops, improving downstream OCR quality. |
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Object Detection** | YOLOv5, SSD |
-| **OCR** | Google Cloud Vision API |
-| **Book Matching** | LLM Integration |
-| **Backend** | Flask (Python) |
-| **Frontend** | React (JavaScript) |
-| **Auth** | Firebase OAuth (Google, GitHub, Email) |
-| **Storage** | Google Cloud Storage |
-| **Database** | Cloud SQL + Cloud SQL Proxy |
-| **Deployment** | Docker → GCP Cloud Run |
-
----
-
-**Live at [SmartBookshelf.io](https://smartbookshelf.io)**
+The live analysis flow is protected by Firebase auth. During testing, the live API accepted a real Firebase email/password account and successfully processed multiple real bookshelf images, returning plausible technical book matches.
