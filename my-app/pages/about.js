@@ -14,99 +14,47 @@ const About = () => {
     }}>
       <Head>
         <title>About - SmartBookshelf.io</title>
-        <meta name="description" content="Learn more about SmartBookshelf.io"/>
+        <meta name="description" content="Background on the earlier SmartBookshelf prototype, bookshelf OCR pipeline, and practical photo capture guidance."/>
       </Head>
 
       <div className="container mx-auto p-6 bg-gray-900 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-white mb-6">About</h1>
+        <h1 className="text-4xl font-bold text-white mb-6">About SmartBookshelf</h1>
         <div className="w-full">
-          <h2 className="text-2xl font-semibold mb-4 text-white">Our Mission</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">What the project is</h2>
           <p className="mb-6 text-white">
-            At SmartBookshelf.io, we&apos;re focused on simplifying the process of cataloging and organizing personal libraries. Whether you&apos;re managing your books for personal use, preparing for sale, or keeping track of textbooks for college, our advanced machine learning technologies can help. Our platform allows you to create and manage personal collections, easily add or remove books,
-            and organize your documents. Our LLM algorithm then works to match each extracted text with a book in our database, making your book management more efficient and streamlined.
+            SmartBookshelf started as a practical computer-vision project for turning bookshelf photos into reviewable book lists. The goal was never to build a generic AI wrapper. The hard part is the perception pipeline: finding thin book spines, pulling messy text out of angled shelf photos, and cleaning that text into titles that a real person can use.
           </p>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Our Technology</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">What this public repo shows</h2>
           <p className="mb-6 text-white">
-            SmartBookshelf.io uses a combination of Optical Character Recognition (OCR) and machine learning to detect
-            and extract text from book spines. Here&apos;s a breakdown of our technology stack:
+            This repository is the earlier public SmartBookshelf codebase. It shows the original end-to-end stack:
           </p>
           <ul className="list-disc list-inside mb-6 text-white">
-            <li><strong>Frontend:</strong> We use React, Next.js, Tailwind CSS, and DaisyUI to build a responsive and
-              user-friendly interface.
-            </li>
-            <li><strong>Backend:</strong> Our backend is powered by Python and Flask, providing fast and reliable
-              endpoints for image processing and text extraction.
-            </li>
-            <li><strong>OCR:</strong> We utilize Google Cloud Vision API and Tesseract OCR to accurately detect and
-              extract text from images of book spines.
-            </li>
-            <li><strong>Machine Learning:</strong> Our system uses YOLO (You Only Look Once) for real-time object
-              detection, ensuring that we accurately identify and crop book spines from uploaded images.
-            </li>
+            <li><strong>Frontend:</strong> Next.js, React, Tailwind CSS, and DaisyUI for the original product prototype.</li>
+            <li><strong>Backend:</strong> Flask endpoints for upload handling, image processing, and storage plumbing.</li>
+            <li><strong>Detection:</strong> YOLO-based book detection to isolate likely spine regions before OCR.</li>
+            <li><strong>OCR:</strong> Google Cloud Vision plus supporting heuristics to extract noisy spine text.</li>
+            <li><strong>Storage:</strong> Google Cloud Storage and Firestore for uploads, crops, and saved user data.</li>
           </ul>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Other Features in Progress</h2>
-          <ul className="list-disc list-inside mb-6 text-white">
-            <li><strong>AI Detector:</strong> An upcoming feature to detect AI-generated text within book descriptions
-              and analyses.
-            </li>
-            <li><strong>Plagiarism Detector:</strong> A feature to ensure the originality of the text by detecting
-              plagiarism in essays and other writings.
-            </li>
-            <li><strong>Essay Writer:</strong> Generate essays based on selected books with customizable formats,
-              styles, and keyword focuses.
-            </li>
-            <li><strong>GPU support:</strong> Integrate a GPU to speed up the process for all users.</li>
-            <li><strong>Async updates:</strong> Improve the speed of the algorithm by fully utilizing caching and preloading of predictions. </li>
-          </ul>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white mt-12">Frequently Asked Questions</h2>
-          <h3 className="text-xl font-semibold mb-2 text-white">What is SmartBookshelf.io?</h3>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Why bookshelf photos are difficult</h2>
           <p className="mb-6 text-white">
-            SmartBookshelf.io is a web application that allows you to upload images of your bookshelf and extract text
-            from the book spines using OCR (Optical Character Recognition) technology.
+            Bookshelf images are a rough OCR input. Spine text is narrow, often vertical, partly blocked, low contrast, and sensitive to glare. Similar-looking bindings also make detection harder. That is why SmartBookshelf treats a shelf photo like a structured computer-vision problem rather than a flat document scan.
           </p>
 
-          <h3 className="text-xl font-semibold mb-2 text-white">How do I use SmartBookshelf.io?</h3>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Good use cases</h2>
           <p className="mb-6 text-white">
-            Simply upload an image of your bookshelf, and our application will detect the books and extract the titles
-            for you. An algorithm is in development that will automatically detect the books and extract additional
-            information for you.
+            The project is useful for personal library cleanup, inventorying shelves before a move, organizing research or office books, preparing books for sale, and building a searchable reading record without typing every title by hand.
           </p>
 
-          <h3 className="text-xl font-semibold mb-2 text-white">What technologies are used in SmartBookshelf.io?</h3>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Best input practices</h2>
           <p className="mb-6 text-white">
-            SmartBookshelf.io uses modern web technologies such as React, Next.js, Tailwind CSS, and DaisyUI for the
-            front end. The backend is powered by Python, Flask, and various OCR libraries.
+            The best results come from one shelf level per photo, a camera angle parallel to the shelf, and readable spine text with low glare. Crop mode is a fallback when you cannot retake the photo, not the ideal path.
           </p>
 
-          <h3 className="text-xl font-semibold mb-2 text-white">How can I ensure the best results when uploading images?</h3>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Project status</h2>
           <p className="mb-6 text-white">
-            Ensure your photo is well-lit, in focus, and that book titles are clearly visible. It is best to separate
-            books of the same size or color as they may blend into one otherwise.
-          </p>
-
-          <h3 className="text-xl font-semibold mb-2 text-white">What if the book titles are not detected accurately?</h3>
-          <p className="mb-6 text-white">
-            You can manually adjust any incorrect book titles after the analysis. We are working on improving the
-            accuracy of our system.
-          </p>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white">Crop Feature</h2>
-          <p className="mb-6 text-white">
-            The crop feature allows you to select specific areas of your uploaded images to focus on. This is particularly useful if the image contains multiple books and you want to refine the detection process. Simply upload an image, use the cropping tool to select the desired areas, and then click &quot;Add Crop&quot; to save your selection. You can add multiple crops if needed.
-          </p>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white">Disclaimer</h2>
-          <p className="mb-6 text-white">
-            SmartBookshelf.io is a project in development, and while we strive to provide accurate and efficient results, there may be inaccuracies in text detection and extraction. For images with
-            poor cropping, bad lighting or tons of books, the results returned by the system may not be accurate. However, it should give you a rough estimate on at least the number of books regardless. We appreciate your understanding and welcome any feedback to help us improve the system.
-          </p>
-
-          <h2 className="text-2xl font-semibold mb-4 text-white">Known Bugs</h2>
-          <p className="mb-6 text-white">
-            We are currently aware of an issue where the color of the cropped book spines may not match the original image. This is a known bug and we are working on a fix. We appreciate your patience and understanding as we work to resolve this issue.
+            The live site has moved beyond this older snapshot, but this repository is still useful if you want to understand the original frontend and backend architecture. The current production-facing frontend lives in a separate repository, while this one preserves the earlier public build.
           </p>
 
           <h2 className="text-2xl font-semibold mb-4 text-white">Get in Touch</h2>

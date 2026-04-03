@@ -21,15 +21,15 @@ const Examples = () => {
     <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('/background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
       <Head>
         <title>Examples - SmartBookshelf.io</title>
-        <meta name="description" content="Examples of how to use SmartBookshelf.io" />
+        <meta name="description" content="Real SmartBookshelf examples showing shelf inputs, crop mode, extracted text, and cleanup output." />
       </Head>
 
       <div className="container mx-auto p-6 bg-gray-900 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-6">Examples</h1>
         <div className="w-full">
-          <h2 className="text-2xl font-semibold mb-4 text-white">Instructional Video</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Walkthrough Video</h2>
           <p className="mb-6 text-white">
-            Watch this video to see a step-by-step guide on how to use SmartBookshelf.io.
+            This walkthrough shows the original product flow from upload through review.
           </p>
           <div className="w-full h-auto mb-4 border rounded-lg overflow-hidden">
             <video width="100%" controls>
@@ -38,9 +38,9 @@ const Examples = () => {
             </video>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 1: Uploading a Bookshelf Image</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 1: A Good Shelf Input</h2>
           <p className="mb-6 text-white">
-            Upload an image of your bookshelf, and our application will detect the books and extract the titles for you.
+            A straight-on, readable shelf photo gives the system the best chance of finding spine regions and extracting usable text.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/examplemain.jpg')}>
@@ -48,14 +48,9 @@ const Examples = () => {
                    height={600} objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 2: When to Use Crop Mode</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 2: Crop Mode as a Fallback</h2>
           <p className="mb-6 text-white">
-            Use crop mode only if you do not have the ability to take new photos. Cropping should only be used for
-            cropping vertical shelves if you cannot take new photos of each shelf. Cropping can also be used to select
-            portions of books on multiple shelves.
-            Note that cropping does result in a significant decrease of resolution and hence the model loses accuracy
-            compared to normal mode. It is recommended to use cropping only when necessary. For the best results,
-            instead take a high resolution photo of each level of the shelf and then upload them as a batch.
+            Crop mode is useful when you cannot retake the image. It helps isolate a shelf section, but it usually lowers accuracy because you lose resolution. When possible, take one high-resolution photo per shelf instead.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/whentousecrop.jpg')}>
@@ -63,9 +58,9 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 3: Extracting Text from Book Spines</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 3: Extracted Spine Text</h2>
           <p className="mb-6 text-white">
-            Upload an image of your bookshelf and our application will extract the titles from the book spines.
+            Once the detector isolates book regions, the OCR stage produces rough text for each spine. The raw output is not always pretty, but it gives the matching stage something useful to work with.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example2.png')}>
@@ -73,9 +68,9 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 4: Image with 16 Books</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 4: Dense Shelf Result</h2>
           <p className="mb-6 text-white">
-            This example shows an image with 16 books detected and extracted.
+            This example shows a denser shelf where multiple titles still need to be separated, read, and returned as reviewable results.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example7.png')}>
@@ -83,9 +78,9 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 5: Drop Down Example</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 5: Review and Correction UI</h2>
           <p className="mb-6 text-white">
-            This example shows the dropdown functionality to select extracted book titles.
+            The important product decision was to return a reviewable list, not pretend the OCR stage would always be perfect on the first pass.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example8.png')}>
@@ -93,9 +88,9 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 6: Multiple Shelves</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 6: Multiple Shelf Uploads</h2>
           <p className="mb-6 text-white">
-            This example shows how users can analyze multiple shelves at once.
+            Users can upload several shelf images in one session instead of trying to fit an entire room into one photo.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example9.png')}>
@@ -103,10 +98,9 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 7: User Page</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 7: Saved Library View</h2>
           <p className="mb-6 text-white">
-            The user page allows users to view and edit their virtual bookcase, as well as export to CSV and use
-            generative AI to analyze their results.
+            After a scan, users can review saved titles, edit the misses, export data, and keep a lightweight digital shelf record.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example10.png')}>
@@ -114,27 +108,27 @@ const Examples = () => {
                    objectFit="contain"/>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-4 text-white">Example 8: GPT Response</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Example 8: Title Cleanup and Matching</h2>
           <p className="mb-6 text-white">
-            GPT assisted response to the extracted text from the book spines.
+            These examples show the cleanup step taking rough OCR fragments and turning them into cleaner candidate titles that are easier to review.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example14.jpg')}>
-            <Image src="/example14.jpg" alt="GPT assisted response" layout="responsive" width={1000} height={600}
+            <Image src="/example14.jpg" alt="Title cleanup output" layout="responsive" width={1000} height={600}
                    objectFit="contain"/>
           </div>
           <p className="mb-6 text-white">
-            This image shows how GPT corrected the typo in the extracted text, ensuring accurate book titles.
+            This screenshot shows the difference between noisy extracted text and a cleaner matched title candidate.
           </p>
           <div className="relative w-full h-auto mb-4 border rounded-lg overflow-hidden cursor-pointer"
                onClick={() => openModal('/example22.jpg')}>
-            <Image src="/example22.jpg" alt="GPT corrected title" layout="responsive" width={1000} height={600}
+            <Image src="/example22.jpg" alt="Matched title example" layout="responsive" width={1000} height={600}
                    objectFit="contain"/>
           </div>
 
           <h2 className="text-2xl font-semibold mb-4 text-white">Cropping Example Video</h2>
           <p className="mb-6 text-white">
-            Watch this video to see how to crop and select specific sections of a bookcase.
+            This short clip shows how the older crop workflow worked in the prototype.
           </p>
           <div className="w-full h-auto mb-4 border rounded-lg overflow-hidden">
             <video width="100%" controls>

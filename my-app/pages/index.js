@@ -12,7 +12,7 @@ export default function Home() {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [croppedImages, setCroppedImages] = useState([]);
   const [extractedTexts, setExtractedTexts] = useState([]);
-  const [gptSuggestions, setGptSuggestions] = useState([]);
+  const [matchedTitles, setMatchedTitles] = useState([]);
   const [error, setError] = useState('');
   const [bookCount, setBookCount] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -112,9 +112,9 @@ export default function Home() {
     }
   };
 
-  const fetchGptSuggestions = async (texts) => {
+  const fetchTitleMatches = async (texts) => {
     try {
-      const response = await fetch('/api/gpt-suggestions', {
+      const response = await fetch('/api/title-matches', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,14 +123,14 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch GPT suggestions');
+        throw new Error('Failed to fetch title matches');
       }
 
       const data = await response.json();
-      setGptSuggestions(data.suggestions);
+      setMatchedTitles(data.matches);
     } catch (error) {
-      console.error('Error fetching GPT suggestions:', error);
-      setError('Error fetching GPT suggestions, please try again.');
+      console.error('Error fetching title matches:', error);
+      setError('Error fetching title matches, please try again.');
     }
   };
 
@@ -188,9 +188,8 @@ export default function Home() {
         setCorrectedBookCount(sortedBooks.length);
         bookRefs.current = sortedBooks.map((_, i) => bookRefs.current[i] || React.createRef());
 
-        // Fetch GPT suggestions
-        const textsToAnalyze = sortedBooks.map(book => book.text);
-        await fetchGptSuggestions(textsToAnalyze);
+        const textsToMatch = sortedBooks.map(book => book.text);
+        await fetchTitleMatches(textsToMatch);
 
         // Only update Firestore if the user is logged in
         if (user) {
@@ -240,7 +239,7 @@ export default function Home() {
     setUploadedImages([]);
     setCroppedImages([]);
     setExtractedTexts([]);
-    setGptSuggestions([]);
+    setMatchedTitles([]);
     setError('');
     setBookCount(null);
     setCorrectedBookCount(null);
@@ -270,14 +269,14 @@ return (
   <div className="min-h-screen flex flex-col items-center py-12" style={{ backgroundImage: "url('background.jpg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed", backgroundPosition: "center", color: "#ffffff" }}>
     <Head>
       <title>SmartBookshelf.io</title>
-      <meta name="description" content="Upload a book image and extract text" />
+      <meta name="description" content="Upload bookshelf photos, extract spine text, and review matched titles." />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </Head>
 
     <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg flex flex-col items-center">
       <div className="text-white mb-8 text-center">
         <h2 className="text-3xl font-semibold mb-4">Welcome to SmartBookshelf.io!</h2>
-        <p className="mb-4 text-lg">This tool helps you to catalog your bookshelf by extracting text from book spines. Follow the steps below to get started:</p>
+        <p className="mb-4 text-lg">Upload one or more shelf photos to extract spine text and turn it into a usable review list.</p>
         <ol className="list-decimal list-inside text-left text-lg">
           <li className="mb-2">Click the &quot;Choose File&quot; button below.</li>
           <li className="mb-2">Select one or more photos of your bookshelves (one photo per shelf) or take new ones.</li>
@@ -390,13 +389,13 @@ return (
               </select>
             </div>
             <div className="mt-4">
-              <label className="mr-2">AI Suggestions:</label>
+              <label className="mr-2">Matched Titles:</label>
               <select
                 className="text-gray-900 rounded p-1 w-full max-w-md"
                 value={correctedBookCount !== null ? correctedBookCount : ''}
                 onChange={(e) => setCorrectedBookCount(e.target.value)}
               >
-                {gptSuggestions.map((suggestion, index) => (
+                {matchedTitles.map((suggestion, index) => (
                   <option key={index} value={index}>
                     {suggestion}
                   </option>
@@ -461,8 +460,8 @@ return (
                       className="mb-4 rounded-lg w-full h-auto max-h-64 object-contain"
                     />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2 text-gray-800">AI Suggestion:</h3>
-                  <p className="text-gray-700">{gptSuggestions[index] || 'No suggestion'}</p>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800">Matched Title:</h3>
+                  <p className="text-gray-700">{matchedTitles[index] || 'No match available'}</p>
                 </div>
               ))}
             </div>

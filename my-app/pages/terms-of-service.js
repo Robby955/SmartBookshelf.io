@@ -30,8 +30,7 @@ const TermsOfService = () => {
 
           <h2 className="text-2xl font-semibold mb-4">Use of Our Service</h2>
           <p className="mb-4">
-            You agree to use SmartBookshelf.io responsibly. You agree to manually use the webpage and not use
-            automated tools or scripts to access the webpage. You may not use this service to cheat at school or on tests. Our tool is designed to assist and inspire, providing ideas and insights, not to facilitate cheating.
+            You agree to use SmartBookshelf.io responsibly. Do not scrape the site, overload the service, attempt unauthorized access, or use automated traffic that interferes with normal operation.
           </p>
 
           <h2 className="text-2xl font-semibold mb-4">Image Uploads</h2>
@@ -42,7 +41,7 @@ const TermsOfService = () => {
 
           <h2 className="text-2xl font-semibold mb-4">No Commercial Use</h2>
           <p className="mb-4">
-            You may not use SmartBookshelf.io for any commercial purposes without our permission.
+            If you want to use SmartBookshelf.io for bulk or commercial workflows, please contact us first.
           </p>
 
           <h2 className="text-2xl font-semibold mb-4">Changes to These Terms</h2>

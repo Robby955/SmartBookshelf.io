@@ -4,7 +4,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const gptSuggestions = async (req, res) => {
+const titleMatches = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -12,19 +12,19 @@ const gptSuggestions = async (req, res) => {
   const { texts } = req.body;
 
   if (!texts || texts.length === 0) {
-    return res.status(400).json({ message: 'No texts provided for suggestions' });
+    return res.status(400).json({ message: 'No texts provided for title matching' });
   }
 
   try {
-    const suggestions = await Promise.all(
+    const matches = await Promise.all(
       texts.map(async (text) => {
         const response = await openai.chat.completions.create({
-          model: "gpt-4",
+          model: 'gpt-4',
           messages: [
             {
-              role: "user",
-              content: `Title: ${text}\nProvide the most likely book title based on the text.`
-            }
+              role: 'user',
+              content: `Noisy OCR text from a book spine: ${text}\nReturn the most likely cleaned book title.`,
+            },
           ],
         });
 
@@ -32,11 +32,11 @@ const gptSuggestions = async (req, res) => {
       })
     );
 
-    res.status(200).json({ suggestions });
+    res.status(200).json({ matches });
   } catch (error) {
-    console.error('Error fetching GPT suggestions:', error);
-    res.status(500).json({ message: 'Failed to fetch GPT suggestions' });
+    console.error('Error fetching title matches:', error);
+    res.status(500).json({ message: 'Failed to fetch title matches' });
   }
 };
 
-export default gptSuggestions;
+export default titleMatches;

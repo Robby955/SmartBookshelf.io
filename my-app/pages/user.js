@@ -182,7 +182,7 @@ const UserPage = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to analyze books: ${response.status} ${response.statusText} - ${errorText}`);
+        throw new Error(`Failed to generate book notes: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const data = await response.json();
@@ -191,8 +191,8 @@ const UserPage = () => {
       setAnalysisResult(data.analysis);
 
     } catch (error) {
-      console.error('Error analyzing books:', error);
-      setError(`Failed to analyze books. Error: ${error.message}`);
+      console.error('Error generating book notes:', error);
+      setError(`Failed to generate book notes. Error: ${error.message}`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -274,7 +274,7 @@ const UserPage = () => {
           >
             Add Book
           </button>
-          <CustomTooltip id="analyzeTooltip" message="Select up to 10 books to analyze">
+          <CustomTooltip id="analyzeTooltip" message="Select up to 10 books for notes">
             <button
               onClick={handleAnalyzeBooks}
               className="btn btn-success"
@@ -294,7 +294,7 @@ const UserPage = () => {
               }}
               disabled={isAnalyzing || selectedBooks.length === 0 || selectedBooks.length > 10}
             >
-              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+              {isAnalyzing ? 'Working...' : 'Notes'}
             </button>
           </CustomTooltip>
           <CustomTooltip id="exportTooltip" message="Select books to export or select all">
@@ -381,7 +381,7 @@ const UserPage = () => {
         )}
         {analysisResult && (
           <div className="mt-4 p-4 rounded shadow mb-4" style={{ background: 'rgba(0, 0, 0, 0.7)', color: '#ffffff' }}>
-            <h2 className="text-xl font-bold mb-2">Analysis Result</h2>
+            <h2 className="text-xl font-bold mb-2">Book Notes</h2>
             <p>{analysisResult}</p>
           </div>
         )}
@@ -420,10 +420,10 @@ const UserPage = () => {
         )}
         {savedAnalyses.length > 0 && (
           <div className="mt-8 w-full">
-            <h2 className="text-xl font-bold mb-2 text-white">Saved AI Analyses</h2>
+            <h2 className="text-xl font-bold mb-2 text-white">Saved Book Notes</h2>
             {savedAnalyses.map((analysis) => (
               <div key={analysis.id} className="mb-4 p-4 rounded shadow" style={{ background: 'rgba(0, 0, 0, 0.7)', color: '#ffffff' }}>
-                <h3 className="text-lg font-bold">Analysis on {new Date(analysis.date).toLocaleDateString()}</h3>
+                <h3 className="text-lg font-bold">Saved on {new Date(analysis.date).toLocaleDateString()}</h3>
                 <p>{analysis.analysis}</p>
                 <h4 className="font-bold mt-2">Books used:</h4>
                 <ul>

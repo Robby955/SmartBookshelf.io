@@ -16,7 +16,7 @@ const FAQ = () => {
     >
       <Head>
         <title>FAQ - SmartBookshelf.io</title>
-        <meta name="description" content="Frequently Asked Questions about SmartBookshelf.io" />
+        <meta name="description" content="Frequently asked questions about SmartBookshelf, bookshelf-photo input quality, and what the public repository contains." />
       </Head>
 
       <div className="container mx-auto p-6 bg-gray-900 bg-opacity-70 rounded-lg shadow-lg flex flex-col items-center mt-12">
@@ -24,28 +24,25 @@ const FAQ = () => {
           <div className="w-full">
               <h2 className="text-2xl font-semibold mb-2 text-white">How do I take a good photo?</h2>
               <p className="mb-6 text-white">
-                  Ensure your photo is well-lit, in focus, and that book titles are clearly visible. It is best to
-                  separate
-                  books of the same size or color as they may blend into one otherwise.
+                  Keep the camera parallel to the shelf, use even lighting, and make sure the spine text is readable. One shelf level per photo usually works much better than a full-room shot.
               </p>
-              <h2 className="text-2xl font-semibold mb-2 text-white">Why can&apos;t I upload large photos?</h2>
+              <h2 className="text-2xl font-semibold mb-2 text-white">When should I use crop mode?</h2>
               <p className="mb-6 text-white">
-                  Our system is currently in development and may not handle very large images well. Try taking multiple
-                  smaller photos for better results. Make sure there are not other items in the photo. Try to ensure it
-                  is one &apos;shelf&apos; per photo instead of multi-level shelves. For multi-level shelves, upload an
-                  image for each shelf.
+                  Crop mode is best used as a fallback when you cannot retake the photo. It helps isolate a shelf section, but it also throws away resolution, so the cleaner option is still to retake the image when possible.
               </p>
-              <h2 className="text-2xl font-semibold mb-2 text-white">What should I do if the app doesn&apos;t detect all
-                  books correctly?</h2>
+              <h2 className="text-2xl font-semibold mb-2 text-white">Why does one shelf per photo matter so much?</h2>
               <p className="mb-6 text-white">
-                  You can manually adjust any incorrect book titles after the analysis. We are working on improving the
-                  accuracy of our system.
+                  Spine text is narrow and easy to lose when the camera is too far away. Splitting a room into one shelf per image preserves detail, reduces glare problems, and gives the OCR stage a much better shot at clean text.
               </p>
 
-              <h2 className="text-2xl font-semibold mb-2 text-white">What are the other features?</h2>
+              <h2 className="text-2xl font-semibold mb-2 text-white">What should I do if some titles are wrong?</h2>
               <p className="mb-6 text-white">
-                  You can automatically organize your virtual bookshelf, export the results to a csv file, and even use generative AI to analyze your results.
-                  In progress is a feature that will assist in essay writing or book reports for certain books.
+                  Treat the output as a reviewable catalog, not an untouchable final answer. The point is to save most of the manual work, then let you correct the misses that come from glare, dense shelves, or unreadable bindings.
+              </p>
+
+              <h2 className="text-2xl font-semibold mb-2 text-white">What does this public repository contain?</h2>
+              <p className="mb-6 text-white">
+                  This repo preserves the earlier public SmartBookshelf stack: the original Next.js prototype, the earlier Flask backend, and a small set of verified sample shelf images. The current production frontend lives in a newer repository.
               </p>
           </div>
       </div>

@@ -14,6 +14,7 @@ This public repository is the earlier SmartBookshelf codebase.
 
 - `backend/` contains the earlier Flask backend and image-processing pipeline
 - `my-app/` contains the earlier Next.js frontend and product prototype
+- `backend/test_images/` keeps a small verified sample set for manual sanity checks
 - `images/` contains public screenshots used in the repo README
 
 The live site has moved forward since this code snapshot. The current production-facing frontend is maintained in `SmartBookshelfV3`.
@@ -46,6 +47,10 @@ SmartBookshelf was built to handle that workflow instead of treating a bookshelf
 - Production site: [smartbookshelf.io](https://www.smartbookshelf.io)
 - Current live frontend repo: [Robby955/SmartBookshelfV3](https://github.com/Robby955/SmartBookshelfV3)
 - Public historical repo: [Robby955/SmartBookshelf.io](https://github.com/Robby955/SmartBookshelf.io)
+
+## Technical notes
+
+- [Verified sample shelf images](backend/test_images/README.md)
 
 If you want the current live UI code, use `SmartBookshelfV3`. If you want the earlier backend and prototype code, use this repository.
 
